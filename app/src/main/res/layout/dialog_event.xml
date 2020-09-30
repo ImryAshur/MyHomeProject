@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/logInBackgroundColorForinput">
+    <TextView
+        android:id="@+id/event_LBL_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Event"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:textStyle="italic"
+        android:textSize="24sp"
+        android:textColor="#000"
+        android:layout_centerHorizontal="true"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/event_LBL_header">
+    <EditText
+        android:id="@+id/event_EDT_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="5dp"
+        android:ems="10"
+        android:inputType="text"
+        android:background="#fff"
+        android:digits="asdfghjklzxcvbnmqwertyuiopASDFGHJKLZXCVBNMQWERTYUIOP1234567890"
+        android:hint="Title"
+        android:singleLine="true"
+        android:imeOptions="actionNext" />
+
+        <EditText
+            android:id="@+id/event_EDT_location"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:padding="5dp"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:inputType="text"
+            android:background="#fff"
+            android:digits="asdfghjklzxcvbnmqwertyuiopASDFGHJKLZXCVBNMQWERTYUIOP1234567890"
+            android:hint="Location"
+            android:singleLine="true"
+            android:imeOptions="actionNext"/>
+
+        <EditText
+            android:id="@+id/event_EDT_date"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:ems="10"
+            android:hint="Date"
+            android:background="#FFF"
+            android:focusable="false"/>
+
+        <EditText
+            android:id="@+id/event_EDT_timeStart"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:tag="S"
+            android:padding="5dp"
+            android:hint="Start At"
+            android:background="#fff"
+            android:focusable="false"/>
+        <EditText
+            android:id="@+id/event_EDT_timeEnd"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:tag="E"
+            android:padding="5dp"
+            android:hint="End At"
+            android:background="#fff"
+            android:focusable="false"/>
+
+        <EditText
+            android:id="@+id/event_EDT_description"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:ems="10"
+            android:hint="description"
+            android:background="#fff"/>
+
+
+        <Button
+            android:id="@+id/event_BTN_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Calendar color"/>
+
+        <Switch
+            android:id="@+id/event_SPC_shareSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Share"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/event_BTN_createEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/logInBackgroundButtonColor"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:text="Add Event"
+            />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

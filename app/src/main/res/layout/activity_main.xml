@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity_Main">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffe95451">
+    <TextView
+        android:id="@+id/main_LBL_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffe95451"
+        android:layout_alignParentLeft="true"
+        android:textColor="#fff"
+        android:textSize="24sp"
+        android:padding="10dp"
+        android:textStyle="italic"/>
+
+        <ImageView
+            android:id="@+id/main_IMG_plus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_plus"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/main_SPC_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/main_LAY_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+</LinearLayout>
