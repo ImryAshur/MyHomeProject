@@ -6,20 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class Fragment_List extends Fragment {
     protected View view;
-    private ListView list_LST_list;
+    //private ListView list_LST_list;
+    private RecyclerView list_LST_list;
     private CallBack_List callBack_list;
 
-    public ListView getList_LST_list() {
+    public RecyclerView getList_LST_list() {
         return list_LST_list;
     }
 
-    public void setList_LST_list(ListView list_LST_list) {
+    public void setList_LST_list(RecyclerView list_LST_list) {
         this.list_LST_list = list_LST_list;
     }
 
@@ -43,12 +44,12 @@ public class Fragment_List extends Fragment {
         }
         findViews(view);
 
-        list_LST_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
-            {
-                callBack_list.getEventFromList(itemPosition);
-            }
-        });
+//        list_LST_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
+//            {
+//                callBack_list.getEventFromList(itemPosition);
+//            }
+//        });
 
         return view;
     }

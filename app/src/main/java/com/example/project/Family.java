@@ -1,17 +1,32 @@
 package com.example.project;
 
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Family {
-    private String nickname;
+    private String key = "";
+    private String nickname = "";
+    private String managerPhone = "";
     private ArrayList<User> familyMembers = new ArrayList<>();
+    private HashMap<String,MyEvent> familyMyEvents = new HashMap<>();
+    //private ArrayList<MyEvent> familyMyEvents = new ArrayList<>();
+
 
     public Family() {}
 
-    public Family(String nickname) {
+    public Family(String nickname,String managerPhone) {
+        this.key = managerPhone + nickname;
         this.nickname = nickname;
+        this.managerPhone = managerPhone;
+    }
+
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getNickname() {
@@ -30,6 +45,25 @@ public class Family {
         this.familyMembers = familyMembers;
     }
 
+    public HashMap<String,MyEvent> getFamilyMyEvents() {
+        return familyMyEvents;
+    }
+
+//    public ArrayList<MyEvent> getFamilyMyEvents() {
+//        return familyMyEvents;
+//    }
+
+//    public void setFamilyMyEvents(ArrayList<MyEvent> familyMyEvents) {
+//        this.familyMyEvents = familyMyEvents;
+//    }
+
+    public String getManagerPhone() {
+        return managerPhone;
+    }
+
+    public void setManagerPhone(String managerPhone) {
+        this.managerPhone = managerPhone;
+    }
 
     public boolean equals(Family obj) {
         return this.nickname.equals(obj.nickname);

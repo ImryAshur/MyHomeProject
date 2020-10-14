@@ -5,5 +5,5 @@ import java.util.Date;
 
 public interface CallBack_Calendar {
     void setHeaderText(String text);
-    void getEventFromCalendar(CompactCalendarView calendar_SPC_calendar,Date date, int dateClicked);
+    void getEventFromCalendar(CompactCalendarView calendar_SPC_calendar,Date date, int dateClicked,String parseDate);
 }

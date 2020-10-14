@@ -12,29 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".Activity_Main"
-            android:label="@string/title_activity__main"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
-        <activity
-            android:name=".Activity_Calendar"
-            android:screenOrientation="portrait">
-
-        </activity>
 
         <activity
-            android:name=".Activity_SignUp"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
-        <activity
-            android:name=".Activity_LogIn"
+            android:name=".Activity_Economy"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -45,6 +25,45 @@
 
         </activity>
 
+
+        <activity
+            android:name=".Activity_NewEvent"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+        </activity>
+
+        <activity
+            android:name=".Activity_Main"
+            android:label="@string/title_activity__main"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".Activity_Calendar"
+            android:screenOrientation="portrait"></activity>
+
+
+        <activity
+            android:name=".Activity_SignUp"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+
+        <activity
+            android:name=".Activity_LogIn"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+
+        <service
+            android:name="MyService" android:exported="false">
+        </service>
     </application>
 
 </manifest>

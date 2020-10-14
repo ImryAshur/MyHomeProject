@@ -6,35 +6,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activity_Main">
-    <RelativeLayout
+    tools:context=".Activity_Main"
+    android:background="@drawable/background">
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffe95451">
+        android:orientation="horizontal"
+        android:background="#DD00897B">
+
+        <ImageView
+            android:id="@+id/main_IMG_menu"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/ic_menu"
+            android:layout_margin="8dp"
+            android:padding="5dp"
+            />
     <TextView
         android:id="@+id/main_LBL_header"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#ffe95451"
-        android:layout_alignParentLeft="true"
         android:textColor="#fff"
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center_vertical"
+        android:text="Oct 2020"
         android:textSize="24sp"
-        android:padding="10dp"
+        android:layout_weight="1"
         android:textStyle="italic"/>
 
         <ImageView
             android:id="@+id/main_IMG_plus"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_plus"
-            android:layout_margin="10dp"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_marginLeft="60dp"
+            android:src="@drawable/ic_plus" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/main_SPC_calendar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="540dp"
         android:layout_weight="1" >
 
 
@@ -44,6 +61,8 @@
         android:id="@+id/main_LAY_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+
+        />
 
 </LinearLayout>

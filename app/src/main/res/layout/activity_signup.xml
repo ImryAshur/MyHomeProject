@@ -44,7 +44,7 @@
             android:id="@+id/signUp_EDT_familyName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Home's Name"
+            android:hint="Home Nickname"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -115,7 +115,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:textSize="20sp"
