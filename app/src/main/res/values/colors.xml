@@ -11,4 +11,10 @@
     <color name="red">#B71C1C</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+
+    <color name="color1">#F1755B</color>
+    <color name="color2">#5CB187</color>
+    <color name="color3">#B05777</color>
+    <color name="color4">#EEBE5C</color>
+    <color name="color5">#8778E9</color>
 </resources>

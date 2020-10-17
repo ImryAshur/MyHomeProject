@@ -4,24 +4,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 public class Fragment_List extends Fragment {
     protected View view;
-    //private ListView list_LST_list;
-    private RecyclerView list_LST_list;
+    private RecyclerView recyclerView;
     private CallBack_List callBack_list;
 
-    public RecyclerView getList_LST_list() {
-        return list_LST_list;
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
-    public void setList_LST_list(RecyclerView list_LST_list) {
-        this.list_LST_list = list_LST_list;
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 
     public static Fragment_List newInstance() {
@@ -55,7 +53,7 @@ public class Fragment_List extends Fragment {
     }
 
     private void findViews(View view) {
-        list_LST_list = view.findViewById(R.id.list_LST_list);
+        recyclerView = view.findViewById(R.id.recyclerView);
     }
 
 

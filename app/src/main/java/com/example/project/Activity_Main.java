@@ -222,8 +222,8 @@ public class Activity_Main extends AppCompatActivity {
         if (adapter_event == null) {
             adapter_event = new Adapter_Event(this, itemsArrayList);
             adapter_event.setClickListeners(eventItemClickListener);
-            fragment_list.getList_LST_list().setLayoutManager(new LinearLayoutManager(this));
-            fragment_list.getList_LST_list().setAdapter(adapter_event);
+            fragment_list.getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
+            fragment_list.getRecyclerView().setAdapter(adapter_event);
         } else {
             adapter_event.notifyDataSetChanged();
         }

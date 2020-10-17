@@ -5,13 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.imageview.ShapeableImageView;
-
 import java.util.ArrayList;
 
 
@@ -36,14 +33,14 @@ public class Adapter_Event extends RecyclerView.Adapter<Adapter_Event.ViewHolder
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.list_item_exercise, parent, false);
+        View view = mInflater.inflate(R.layout.list_item_event, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        //Log.d("pttt", "position = " + position);
+
         MyEvent myEvent = (MyEvent) mData.get(position);
 
         String familyLink = "https://banner2.cleanpng.com/20190201/tgy/kisspng-thrybergh-primary-school-ygk-family-child-school-parents-clipart-black-and-white-library-r-5c54bb88d74735.4146544615490569048818.jpg";

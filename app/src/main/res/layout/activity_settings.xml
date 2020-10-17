@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity_Settings">
+
+    <RelativeLayout
+        android:id="@+id/settings_SPC_toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:background="@color/logInSignUpBackground"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/settings_IMG_menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_menu"/>
+
+        <ImageView
+            android:id="@+id/settings_IMG_logo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/settings_LBL_header"
+            android:src="@drawable/ic_logo"/>
+
+
+        <TextView
+            android:id="@+id/settings_LBL_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/asap_semibolditalic"
+            android:includeFontPadding="false"
+            android:text="Settings"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="5dp"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/settings_SPC_toolBar"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:layout_centerVertical="true">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:tag="1"
+            android:id="@+id/settings_LBL_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" Details"
+            android:textSize="24sp"
+            android:layout_marginTop="15dp"
+            android:drawableStart="@drawable/ic_economy_title"
+            android:background="@drawable/borderbottom"
+            android:textColor="@color/black"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:tag="2"
+            android:id="@+id/settings_LBL_familyMembers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" Family Members"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/ic_family"
+            android:background="@drawable/borderbottom"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:tag="3"
+            android:id="@+id/settings_LBL_addMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="  Add/Delete Member"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/ic_text"
+            android:background="@drawable/borderbottom"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:tag="4"
+            android:id="@+id/settings_LBL_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" Change Password"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/ic_lock"
+            android:background="@drawable/borderbottom"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

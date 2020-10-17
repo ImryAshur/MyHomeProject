@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/logInSignUpBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_logo" />
+
+        <TextView
+            android:id="@+id/newNote_LBL_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/asap_semibolditalic"
+            android:text="New Note"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Title"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newNote_EDT_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:inputType="text"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.example.project.LinedEditText
+                android:layout_marginTop="10dp"
+                android:id="@+id/newNote_EDT_text"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:gravity="top|left"
+                android:background="#fff"
+                android:inputType="textMultiLine"
+                android:hint="Body"/>
+
+
+
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/newNote_BTN_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share?"
+            android:textColorHighlight="@color/colorPrimaryDark"
+            android:layout_gravity="left"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newNote_BTN_go"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:text="go"
+            android:textSize="20sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newNote_BTN_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/red"
+            android:layout_weight="1"
+            android:text="cancel"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+</RelativeLayout>

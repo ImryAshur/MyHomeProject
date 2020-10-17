@@ -18,13 +18,13 @@
 
         <ImageView
             android:id="@+id/main_IMG_menu"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:src="@drawable/ic_menu"
-            android:layout_margin="8dp"
-            android:padding="5dp"
+            android:layout_margin="5dp"
+
             />
     <TextView
         android:id="@+id/main_LBL_header"

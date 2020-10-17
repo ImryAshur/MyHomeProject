@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/logInSignUpBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="vertical"
+        >
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_logo" />
+
+    <TextView
+        android:id="@+id/details_LBL_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/asap_semibolditalic"
+        android:text="Details"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        >
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Nickname:"
+            android:fontFamily="@font/asap_semibolditalic"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/details_LBL_familyNickname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:text="Ashur"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:gravity="center|center_vertical"
+            android:singleLine="true"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Name:"
+            android:fontFamily="@font/asap_semibolditalic"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/details_LBL_familyName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"
+            android:text="Ashur"
+            android:textColor="@color/black"
+            android:gravity="center|center_vertical"
+            android:singleLine="true"
+            />
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Name:"
+                android:fontFamily="@font/asap_semibolditalic"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/details_LBL_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:text="Imry"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:gravity="center|center_vertical"
+                android:singleLine="true"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number:"
+                android:fontFamily="@font/asap_semibolditalic"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/details_LBL_phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:text="0528449106"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:gravity="center|center_vertical"
+                android:singleLine="true"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password:"
+                android:fontFamily="@font/asap_semibolditalic"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/details_LBL_password"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:text="123456"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:gravity="center|center_vertical"
+                android:singleLine="true"
+
+                />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/details_BTN_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ok"
+            android:layout_marginTop="15dp"/>
+    </LinearLayout>
+
+</RelativeLayout>
