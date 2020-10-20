@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -20,6 +20,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.project.Adapters.Adapter_Notes;
+import com.example.project.Fragments.Fragment_Note;
+import com.example.project.CallBacks.GetDataListener;
+import com.example.project.Others.LinedEditText;
+import com.example.project.Others.MySharedPreferencesV4;
+import com.example.project.Others.MySignalV2;
+import com.example.project.Objects.Note;
+import com.example.project.Objects.User;
+import com.example.project.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.navigation.NavigationView;
@@ -36,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Activity_Notes extends AppCompatActivity {
+
 
     private String TAG = "pttt";
     private DrawerLayout notes_SPC_drawerLayout;

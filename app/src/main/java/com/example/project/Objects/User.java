@@ -1,4 +1,6 @@
-package com.example.project;
+package com.example.project.Objects;
+
+import com.example.project.Objects.MyEvent;
 
 import java.util.ArrayList;
 

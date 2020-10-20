@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".MyApp"
+        android:name=".Others.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".Activity_Settings"
+            android:name=".Activities.Activity_Settings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -32,13 +32,13 @@
 
         </activity>
         <activity
-            android:name=".Activity_NewEvent"
+            android:name=".Activities.Activity_NewEvent"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
         <activity
-            android:name=".Activity_Main"
+            android:name=".Activities.Activity_Main"
             android:label="@string/title_activity__main"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
@@ -49,11 +49,11 @@
 
 
         <activity
-            android:name=".Activity_SignUp"
+            android:name=".Activities.Activity_SignUp"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity_LogIn"
+            android:name=".Activities.Activity_LogIn"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
 
@@ -65,7 +65,7 @@
     </activity>
 
         <activity
-            android:name=".Activity_Notes"
+            android:name=".Activities.Activity_Notes"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
 

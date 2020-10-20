@@ -5,7 +5,7 @@
     android:id="@+id/notes_SPC_drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity_Notes">
+    tools:context=".Activities.Activity_Notes">
 
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

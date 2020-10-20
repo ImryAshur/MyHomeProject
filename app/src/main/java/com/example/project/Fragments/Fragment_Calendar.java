@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Fragments;
 
 import android.icu.util.Calendar;
 import android.os.Build;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+
+import com.example.project.CallBacks.CallBack_Calendar;
+import com.example.project.R;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,9 +18,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 
-//CALENDAR COLOR - #ffe95451
-//app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
-//app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
 public class Fragment_Calendar extends Fragment {
     protected View view;
     private CompactCalendarView calendar_SPC_calendar;

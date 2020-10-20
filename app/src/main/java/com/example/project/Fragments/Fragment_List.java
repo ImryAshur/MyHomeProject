@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.project.CallBacks.CallBack_List;
+import com.example.project.R;
 
 
 public class Fragment_List extends Fragment {

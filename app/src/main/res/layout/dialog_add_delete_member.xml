@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/logInSignUpBackground"
-    tools:context=".Activity_LogIn">
+    tools:context=".Activities.Activity_LogIn">
 
     <ImageView
         android:id="@+id/addMember_IMG_logo"

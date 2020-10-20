@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ public class Family {
     private String familyName = "";
     private String managerPhone = "";
     private ArrayList<User> familyMembers = new ArrayList<>();
-    private HashMap<String,MyEvent> familyMyEvents = new HashMap<>();
+    private HashMap<String, MyEvent> familyMyEvents = new HashMap<>();
     //private ArrayList<MyEvent> familyMyEvents = new ArrayList<>();
 
 

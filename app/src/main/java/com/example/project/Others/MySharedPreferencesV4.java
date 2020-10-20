@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Others;
 
 // Need also import gradle:         implementation 'com.google.code.gson:gson:2.8.2'
 

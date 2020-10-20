@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,9 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.project.Others.MySharedPreferencesV4;
+import com.example.project.Others.MySignalV2;
+import com.example.project.Objects.User;
+import com.example.project.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;

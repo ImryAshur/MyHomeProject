@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Activities;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -22,6 +22,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.project.Adapters.Adapter_Event;
+import com.example.project.CallBacks.CallBack_Calendar;
+import com.example.project.Fragments.Fragment_Calendar;
+import com.example.project.Fragments.Fragment_List;
+import com.example.project.CallBacks.GetDataListener;
+import com.example.project.Others.MySharedPreferencesV4;
+import com.example.project.Objects.MyEvent;
+import com.example.project.Objects.User;
+import com.example.project.R;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.navigation.NavigationView;
@@ -44,6 +53,7 @@ public class Activity_Main extends AppCompatActivity {
     public static final String TAG = "pttt";
     public static final String EXTRA_KEY_USER = "EXTRA_KEY_USER";
     public static final String EXTRA_KEY_EVENT = "EXTRA_KEY_EVENT";
+
     private DrawerLayout main_SPC_drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar main_SPC_toolBar;

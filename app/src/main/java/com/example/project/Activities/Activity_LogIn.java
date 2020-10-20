@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.project.CallBacks.GetDataListener;
+import com.example.project.Objects.User;
+import com.example.project.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -80,7 +82,7 @@ public class Activity_LogIn extends AppCompatActivity {
                             if (user.getPassword().equals(userInputPassword)){
                                 Gson gson = new Gson();
                                 String parseUser = gson.toJson(user);
-                                Intent intent = new Intent(Activity_LogIn.this,Activity_Main.class);
+                                Intent intent = new Intent(Activity_LogIn.this, Activity_Main.class);
                                 intent.putExtra(Activity_Main.EXTRA_KEY_USER,parseUser);
                                 dismissDialog();
                                 startActivity(intent);

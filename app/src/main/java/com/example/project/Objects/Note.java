@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Objects;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;

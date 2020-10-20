@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.project.Objects.MyEvent;
+import com.example.project.R;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.imageview.ShapeableImageView;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class Adapter_Event extends RecyclerView.Adapter<Adapter_Event.ViewHolder
     private EventItemClickListener eventItemClickListener;
 
     // data is passed into the constructor
-    Adapter_Event(Context context, ArrayList<com.github.sundeepk.compactcalendarview.domain.Event> data) {
+    public Adapter_Event(Context context, ArrayList<com.github.sundeepk.compactcalendarview.domain.Event> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.context = context;

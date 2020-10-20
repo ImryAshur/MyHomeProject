@@ -1,6 +1,4 @@
-package com.example.project;
-
-import android.content.Intent;
+package com.example.project.Objects;
 
 import java.sql.Timestamp;
 

@@ -1,4 +1,4 @@
-package com.example.project;
+package com.example.project.Adapters;
 
 
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.project.Objects.Note;
+import com.example.project.R;
 
 import java.util.ArrayList;
 

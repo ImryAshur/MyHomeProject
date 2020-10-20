@@ -1,6 +1,4 @@
-package com.example.project;
-
-import com.github.sundeepk.compactcalendarview.domain.Event;
+package com.example.project.Objects;
 
 import java.sql.Timestamp;
 
