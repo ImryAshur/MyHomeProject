@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Content">
+        <menu>
+            <item
+                android:id="@+id/nav_LBL_calendar"
+                android:title="Calendar"
+                android:icon="@drawable/ic_calendar"/>
+            <item
+                android:id="@+id/nav_LBL_notes"
+                android:title="Notes"
+                android:icon="@drawable/ic_notes"/>
+        </menu>
+    </item>
+
+    <item android:title="App">
+        <menu>
+            <item
+                android:id="@+id/nav_LBL_settings"
+                android:title="Settings"
+                android:icon="@drawable/ic_settings"/>
+            <item
+                android:id="@+id/nav_LBL_logout"
+                android:title="Log Out"
+                android:icon="@drawable/ic_exit"/>
+        </menu>
+    </item>
+</menu>

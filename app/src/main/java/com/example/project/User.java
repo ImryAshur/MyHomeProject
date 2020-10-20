@@ -3,6 +3,7 @@ package com.example.project;
 import java.util.ArrayList;
 
 public class User {
+    private String key = "";
     private String familyName = "";
     private String userName = "";
     private String phone = "";
@@ -11,11 +12,20 @@ public class User {
 
     public User() {}
 
-    public User(String familyName, String userName, String phone, String password) {
+    public User(String key,String familyName, String userName, String phone, String password) {
+        this.key = key;
         this.familyName = familyName;
         this.userName = userName;
         this.phone = phone;
         this.password = password;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getFamilyName() {

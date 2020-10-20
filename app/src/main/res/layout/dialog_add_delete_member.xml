@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Activity_LogIn"
-    android:background="@color/logInSignUpBackground">
+    android:background="@color/logInSignUpBackground"
+    tools:context=".Activity_LogIn">
 
     <ImageView
         android:id="@+id/addMember_IMG_logo"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_logo"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_logo" />
 
     <TextView
         android:id="@+id/addMember_LBL_header"
@@ -23,99 +22,96 @@
         android:layout_below="@id/addMember_IMG_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
-        android:text="Add/Remove Member"
         android:fontFamily="@font/asap_semibolditalic"
+        android:text="Add/Remove Member"
         android:textColor="@color/black"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_below="@+id/addMember_LBL_header"
+        android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:layout_centerVertical="true">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="User Name For New Member"
             android:layout_marginTop="4dp"
-            >
+            android:hint="User Name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addMember_EDT_userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:background="@color/white"
                 android:layout_weight="1"
-                />
+                android:background="@color/white"
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone Number"
             android:layout_marginTop="4dp"
-            >
+            android:hint="Phone Number">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addMember_EDT_phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:background="@color/white"
                 android:layout_weight="1"
-                />
+                android:background="@color/white"
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password For New Member"
             android:layout_marginTop="4dp"
-            >
+            android:hint="Password For New Member">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/addMember_EDT_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:background="@color/white"
                 android:layout_weight="1"
-                />
+                android:background="@color/white"
+                android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-        <com.google.android.material.button.MaterialButton
-        android:id="@+id/addMember_BTN_addMember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textSize="20sp"
-        android:text="Add Member"
-        android:layout_weight="1"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addMember_BTN_removeMember"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:textSize="20sp"
-            android:text="Remove Member"
-            android:backgroundTint="#9AB71C3B"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:padding="10dp">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addMember_BTN_addMember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:tag="a"
+                android:text="Add"
+                android:textSize="20sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:tag="r"
+                android:id="@+id/addMember_BTN_removeMember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="#9AB71C3B"
+                android:text="Remove"
+                android:textSize="20sp" />
+        </LinearLayout>
 
 
     </LinearLayout>

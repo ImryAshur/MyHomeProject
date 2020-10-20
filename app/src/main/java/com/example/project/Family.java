@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Family {
     private String key = "";
-    private String nickname = "";
+    private String familyName = "";
     private String managerPhone = "";
     private ArrayList<User> familyMembers = new ArrayList<>();
     private HashMap<String,MyEvent> familyMyEvents = new HashMap<>();
@@ -14,12 +14,19 @@ public class Family {
 
     public Family() {}
 
-    public Family(String nickname,String managerPhone) {
-        this.key = managerPhone + nickname;
-        this.nickname = nickname;
+    public Family(String key,String familyName,String managerPhone) {
+        this.key = key;
+        this.familyName = familyName;
         this.managerPhone = managerPhone;
     }
 
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
 
     public String getKey() {
         return key;
@@ -29,13 +36,6 @@ public class Family {
         this.key = key;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
 
     public ArrayList<User> getFamilyMembers() {
         return familyMembers;
@@ -66,13 +66,13 @@ public class Family {
     }
 
     public boolean equals(Family obj) {
-        return this.nickname.equals(obj.nickname);
+        return this.familyName.equals(obj.familyName);
     }
 
     @Override
     public String toString() {
-        return "Family -" +
-                "nickname='" + nickname + '\'' +
+        return "Family -" + familyName+
+                "nickname='" + key + '\'' +
                 ", familyMembers=" + familyMembers +
                 '}';
     }

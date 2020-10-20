@@ -41,6 +41,7 @@ public class Fragment_Calendar extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //findViews(view);
         super.onCreate(savedInstanceState);
     }
 

@@ -62,4 +62,8 @@ dependencies {
     //AndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    //SharedPref
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+    debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+
 }

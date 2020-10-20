@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 
 public class Activity_SignUp extends AppCompatActivity {
 
+    private TextInputLayout signUp_EDT_familyNickname;
     private TextInputLayout signUp_EDT_familyName;
     private TextInputLayout signUp_EDT_userName;
     private TextInputLayout signUp_EDT_phoneNumber;
@@ -32,6 +34,7 @@ public class Activity_SignUp extends AppCompatActivity {
     private TextInputLayout newHome_EDT_homeName;
     private TextInputLayout newHome_EDT_phoneNumber;
 
+    private ProgressDialog progressDialog;
     private HashMap<String,Object> userHashMapDB = new HashMap<>();
     private Button signUp_BTN_continue;
     private Button signUp_BTN_logIn;
@@ -52,6 +55,7 @@ public class Activity_SignUp extends AppCompatActivity {
     }
 
     private void findViews() {
+        signUp_EDT_familyNickname = findViewById(R.id.signUp_EDT_familyNickname);
         signUp_EDT_familyName = findViewById(R.id.signUp_EDT_familyName);
         signUp_EDT_userName = findViewById(R.id.signUp_EDT_userName);
         signUp_EDT_phoneNumber = findViewById(R.id.signUp_EDT_phoneNumber);
@@ -61,7 +65,16 @@ public class Activity_SignUp extends AppCompatActivity {
         signUp_BTN_newHome = findViewById(R.id.signUp_BTN_newHome);
     }
 
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Please Wait...");
+        progressDialog.show();
+    }
 
+    private void dismissDialog(){
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
     public void openDialog() {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_newhome);
@@ -89,9 +102,10 @@ public class Activity_SignUp extends AppCompatActivity {
         public void onClick(View view) {
             final String userInputNickname = newHome_EDT_homeName.getEditText().getText().toString().trim();
             final String managerPhone = newHome_EDT_phoneNumber.getEditText().getText().toString().trim();
-            phoneinput = makeError(view,newHome_EDT_phoneNumber,"Phone number");
-            nicknameinput = makeError(view,newHome_EDT_homeName,"Home nickname");
-            familyinput = makeError(view,newHome_EDT_familyName,"Family name");
+            final String familyName = newHome_EDT_familyName.getEditText().getText().toString().trim();
+            phoneinput = makeError(view,newHome_EDT_phoneNumber,"Phone Number");
+            nicknameinput = makeError(view,newHome_EDT_homeName,"Home Nickname");
+            familyinput = makeError(view,newHome_EDT_familyName,"Family Name");
             if(phoneinput && nicknameinput && familyinput) {
                 readData(FirebaseDatabase.getInstance().getReference("families"), new GetDataListener() {
                     @Override
@@ -99,10 +113,11 @@ public class Activity_SignUp extends AppCompatActivity {
                         if (dataSnapshot.hasChild(userInputNickname)) {
                             newHome_EDT_homeName.setError("Nickname Already Exists");
                         } else {
-                            addNewFamilyToDB(userInputNickname, managerPhone);
+                            addNewFamilyToDB(userInputNickname,familyName, managerPhone);
                             dialog.dismiss();
-                            signUp_EDT_familyName.getEditText().setText(userInputNickname);
+                            signUp_EDT_familyName.getEditText().setText(familyName);
                             signUp_EDT_phoneNumber.getEditText().setText(managerPhone);
+                            signUp_EDT_familyNickname.getEditText().setText(userInputNickname);
                         }
                     }
 
@@ -121,39 +136,18 @@ public class Activity_SignUp extends AppCompatActivity {
     };
 
 
-//    private void checkUniqeFamilyNickname(final String input) {
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("families");
-//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.hasChild(input)){
-//                    Log.d("pttt", "here");
-//                    Log.d("pttt", "" + snapshot.hasChild(input));
-//                    //familyCheck = false;
-//                    newHome_EDT_homeName.setError("Nickname Already Exists");
-//                }else{
-//                    //familyCheck = true;
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
 
-    private void addNewFamilyToDB(String familyNickname,String managerPhone) {
-        Log.d("pttt", "addNewFamilyToDB: " + managerPhone);
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("families/");
-        Family family = new Family(familyNickname,managerPhone);
-        myRef.child(family.getNickname()).setValue(family);
+    private void addNewFamilyToDB(String key,String familyName,String managerPhone) {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("families");
+        Family family = new Family(key,familyName,managerPhone);
+        myRef.child(family.getKey()).setValue(family);
     }
 
     private View.OnClickListener haveAccountBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(Activity_SignUp.this,Activity_LogIn.class);
-            startActivity(intent);
+//            Intent intent = new Intent(Activity_SignUp.this,Activity_LogIn.class);
+//            startActivity(intent);
             finish();
         }
     };
@@ -161,49 +155,58 @@ public class Activity_SignUp extends AppCompatActivity {
     private View.OnClickListener continueBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            final String userInputNickname = signUp_EDT_familyName.getEditText().getText().toString().trim();
-            familyinput = makeError(view,signUp_EDT_familyName,"Family name");
-            userinput = makeError(view,signUp_EDT_userName,"User name");
-            phoneinput = makeError(view,signUp_EDT_phoneNumber,"Phone number");
+            showProgressDialog();
+            boolean familyNickname;
+            final String userInputNickname = signUp_EDT_familyNickname.getEditText().getText().toString().trim();
+            familyNickname = makeError(view,signUp_EDT_familyNickname,"Family Nickname");
+            familyinput = makeError(view,signUp_EDT_familyName,"Family Name");
+            userinput = makeError(view,signUp_EDT_userName,"User Name");
+            phoneinput = makeError(view,signUp_EDT_phoneNumber,"Phone Number");
             passwordinput = makeError(view,signUp_EDT_password,"Password");
-            if(familyinput && userinput && phoneinput && passwordinput){
-                readData(FirebaseDatabase.getInstance().getReference("families"), new GetDataListener() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChild(userInputNickname)) {
-                            Family family = dataSnapshot.child(userInputNickname).getValue(Family.class);
-                            Log.d("pttt",   "" + family);
-                            User user = createNewUserAndStoreAtDB();
-                            family.getFamilyMembers().add(user);
-                            Log.d("pttt",   "" + family.toString());
-                            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("families/");
-                            myRef.child(family.getNickname()).setValue(family);
-                            finish();
-                        } else {
-                            signUp_EDT_familyName.setError("There's no such family nickname");
-                        }
-                    }
-
-                    @Override
-                    public void onStart() {
-
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
-            }
+            if(familyinput && userinput && phoneinput && passwordinput && familyNickname){
+                Log.d("pttt", "onClick: ");
+                checkIfFamilyNameInDB(userInputNickname);
+            }else dismissDialog();
         }
     };
 
+    private void checkIfFamilyNameInDB(final String userInputNickname) {
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("families");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(userInputNickname)) {
+
+                    //Family family = snapshot.child(userInputNickname).getValue(Family.class);
+                    //Log.d("pttt",   "" + family);
+                    User user = createNewUserAndStoreAtDB();
+                    //family.getFamilyMembers().add(user);
+                    //Log.d("pttt",   "" + family.toString());
+
+                    reference.child(user.getKey()).child("familyMembers").child(user.getPhone()).setValue(user);
+                    dismissDialog();
+                    finish();
+                } else {
+                    dismissDialog();
+                    signUp_EDT_familyNickname.setError("There's no such family nickname");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private User createNewUserAndStoreAtDB() {
+
+        String key = signUp_EDT_familyNickname.getEditText().getText().toString().trim();
         String familyName = signUp_EDT_familyName.getEditText().getText().toString().trim();
         String userName = signUp_EDT_userName.getEditText().getText().toString().trim();
         String phoneNumber = signUp_EDT_phoneNumber.getEditText().getText().toString().trim();
         String password = signUp_EDT_password.getEditText().getText().toString().trim();
-        User user = new User(familyName,userName,phoneNumber,password);
+        User user = new User(key,familyName,userName,phoneNumber,password);
 
         //Store at DB
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users");

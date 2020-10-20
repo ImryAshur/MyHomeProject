@@ -3,6 +3,7 @@ package com.example.project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class Activity_LogIn extends AppCompatActivity {
     private Button logIn_BTN_loginbutton;
     private Button logIn_BTN_signUpButton;
     private boolean phoneinput = false,passwordinput = false;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,16 @@ public class Activity_LogIn extends AppCompatActivity {
         logIn_BTN_loginbutton = findViewById(R.id.logIn_BTN_loginbutton);
         logIn_BTN_signUpButton = findViewById(R.id.logIn_BTN_signUpButton);
     }
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Please Wait...");
+        progressDialog.show();
+    }
 
+    private void dismissDialog(){
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
     private View.OnClickListener signUpBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -53,6 +64,7 @@ public class Activity_LogIn extends AppCompatActivity {
     private View.OnClickListener loginBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            showProgressDialog();
             final String userInputPhoneNumber = logIn_EDT_phoneNumber.getEditText().getText().toString().trim();
             final String userInputPassword = logIn_EDT_password.getEditText().getText().toString().trim();
 
@@ -70,12 +82,15 @@ public class Activity_LogIn extends AppCompatActivity {
                                 String parseUser = gson.toJson(user);
                                 Intent intent = new Intent(Activity_LogIn.this,Activity_Main.class);
                                 intent.putExtra(Activity_Main.EXTRA_KEY_USER,parseUser);
+                                dismissDialog();
                                 startActivity(intent);
                                 finish();
                             }else{
+                                dismissDialog();
                                 logIn_EDT_password.setError("Wrong Password, Try again");
                             }
                         } else {
+                            dismissDialog();
                             logIn_EDT_phoneNumber.setError("Wrong Phone Number, Try again");
                         }
                     }
@@ -90,6 +105,8 @@ public class Activity_LogIn extends AppCompatActivity {
 
                     }
                 });
+
+
             }
         }
     };

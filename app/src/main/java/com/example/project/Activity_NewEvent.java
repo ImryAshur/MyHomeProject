@@ -30,12 +30,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Activity_NewEvent extends AppCompatActivity {
     public static final String EXTRA_KEY_USER_FAMILY_NAME = "EXTRA_KEY_USER_FAMILY_NAME";
@@ -119,25 +121,10 @@ public class Activity_NewEvent extends AppCompatActivity {
             setProperties(event);
             newEvent_BTN_cancel.setOnClickListener(removeEvent);
         }
-        //Log.d("pttt", "getFamilyName: " + userFamilyName);
+
         if (userFamilyName.length() > 0) {
-            readData(FirebaseDatabase.getInstance().getReference("families/" + userFamilyName), new GetDataListener() {
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    family = dataSnapshot.getValue(Family.class);
-                    setMemberListCheckBox();
-                }
-
-                @Override
-                public void onStart() {
-
-                }
-
-                @Override
-                public void onFailure() {
-
-                }
-            });
+            Log.d("pttt", "getMyIntent: ");
+            setMemberListCheckBox();
 
         }
     }
@@ -154,17 +141,26 @@ public class Activity_NewEvent extends AppCompatActivity {
         newEvent_EDT_timeStart.setText(event.getStartTime());
         newEvent_EDT_description.setText(event.getDescription());
         newEvent_SPC_shareSwitch.setChecked(event.isSwitchOn());
+        colorSelected = event.getColorArrNum();
 
+    }
+    private HashMap<String,String> getArrayListFromSP(){
+        HashMap<String,String> hashMapFamilyMembersNames = new HashMap<>();
+        // TODO: 19/10/2020 change ashur to public name
+        String hashMapString = MySharedPreferencesV4.getInstance().getString("ashur_FAMILY_MEMBERS","");
+        if (hashMapString.length() > 0 ){
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            hashMapFamilyMembersNames = new Gson().fromJson(hashMapString, type);
+        }
+        return hashMapFamilyMembersNames;
     }
 
     private void setMemberListCheckBox() {
-        ArrayList<User> temp = family.getFamilyMembers();
-        final String[] listMembers = new String[temp.size()];
-        for (int i = 0; i < temp.size(); i++) {
-            familyMembers.add(temp.get(i).getUserName());
-            listMembers[i] = temp.get(i).getUserName();
-        }
-        checkedItems = new boolean[familyMembers.size()];
+        Log.d("pttt", "setMemberListCheckBox: ");
+        HashMap<String,String> familyMembersNames = getArrayListFromSP();
+        final String[]  listMembers = (String[]) familyMembersNames.values().toArray(new String[0]);
+
+        checkedItems = new boolean[familyMembersNames.size()];
         newEvent_LST_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,26 +302,8 @@ public class Activity_NewEvent extends AppCompatActivity {
     }
 
     private void removeFromDB(String path) {
-        readData(FirebaseDatabase.getInstance().getReference(path), new GetDataListener() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null){
-                   dataSnapshot.child(event.getKey()+"").getRef().removeValue();
-                }
-
-            }
-
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
-
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(path);
+        reference.child(event.getKey()).removeValue();
     }
 
 
@@ -354,9 +332,22 @@ public class Activity_NewEvent extends AppCompatActivity {
             int minute = calendar.get(Calendar.MINUTE);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             timeDialog(newEvent_EDT_timeStart, minute, hour);
-
         }
     };
+
+    private void timeDialog(final TextView time, final int minute, final int hour) {
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(Activity_NewEvent.this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
+                        if (selectedMinute <= 9) {
+                            time.setText(selectedHour + ":" + "0" + selectedMinute);
+                        } else
+                            time.setText(selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+        timePickerDialog.show();
+    }
 
     private View.OnClickListener closeActivity = new View.OnClickListener() {
         @Override
@@ -378,17 +369,5 @@ public class Activity_NewEvent extends AppCompatActivity {
         }
     };
 
-    private void timeDialog(final TextView time, final int minute, final int hour) {
-        final TimePickerDialog timePickerDialog = new TimePickerDialog(Activity_NewEvent.this,
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
-                        if (selectedMinute <= 9) {
-                            time.setText(selectedHour + ":" + "0" + selectedMinute);
-                        } else
-                            time.setText(selectedHour + ":" + selectedMinute);
-                    }
-                }, hour, minute, true);
-        timePickerDialog.show();
-    }
+
 }
