@@ -21,7 +21,7 @@ public class Adapter_Event extends RecyclerView.Adapter<Adapter_Event.ViewHolder
     private Context context;
     private EventItemClickListener eventItemClickListener;
 
-    
+
     // data is passed into the constructor
     public Adapter_Event(Context context, ArrayList<com.github.sundeepk.compactcalendarview.domain.Event> data) {
         this.mInflater = LayoutInflater.from(context);
