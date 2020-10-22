@@ -2,8 +2,10 @@ package com.example.project.Activities;
 /*
 Developer - Imry Ashur
 */
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
 import com.example.project.CallBacks.GetDataListener;
 import com.example.project.Objects.Family;
 import com.example.project.Objects.User;
@@ -23,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.HashMap;
 
 public class Activity_SignUp extends AppCompatActivity {
@@ -38,12 +42,12 @@ public class Activity_SignUp extends AppCompatActivity {
     private TextInputLayout newHome_EDT_phoneNumber;
 
     private ProgressDialog progressDialog;
-    private HashMap<String,Object> userHashMapDB = new HashMap<>();
+    private HashMap<String, Object> userHashMapDB = new HashMap<>();
     private Button signUp_BTN_continue;
     private Button signUp_BTN_logIn;
     private Button signUp_BTN_newHome;
     private Button newHome_BTN_go;
-    private boolean familyinput = false,userinput = false,phoneinput = false,passwordinput = false,nicknameinput = false;
+    private boolean familyinput = false, userinput = false, phoneinput = false, passwordinput = false, nicknameinput = false;
     private Dialog dialog;
 
 
@@ -74,10 +78,12 @@ public class Activity_SignUp extends AppCompatActivity {
         progressDialog.show();
     }
 
-    private void dismissDialog(){
+    private void dismissDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
+
+    // open new home dialog
     public void openDialog() {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_newhome);
@@ -93,6 +99,7 @@ public class Activity_SignUp extends AppCompatActivity {
         newHome_EDT_phoneNumber = dialog.findViewById(R.id.newHome_EDT_phoneNumber);
     }
 
+    // check if the user got network and open new home dialog
     private View.OnClickListener createNewHomeBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -101,6 +108,7 @@ public class Activity_SignUp extends AppCompatActivity {
         }
     };
 
+    // get values from edit text and check if all the values are correct, if yes create new family and store in DB
     private View.OnClickListener newHomeGoBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -109,17 +117,17 @@ public class Activity_SignUp extends AppCompatActivity {
             final String managerPhone = newHome_EDT_phoneNumber.getEditText().getText().toString().trim();
             final String familyName = newHome_EDT_familyName.getEditText().getText().toString().trim();
 
-            phoneinput = makeError(view,newHome_EDT_phoneNumber,getString(R.string.phoneNumber));
-            nicknameinput = makeError(view,newHome_EDT_homeName,getString(R.string.nickname));
-            familyinput = makeError(view,newHome_EDT_familyName,getString(R.string.familyName));
-            if(phoneinput && nicknameinput && familyinput) {
+            phoneinput = makeError(view, newHome_EDT_phoneNumber, getString(R.string.phoneNumber));
+            nicknameinput = makeError(view, newHome_EDT_homeName, getString(R.string.nickname));
+            familyinput = makeError(view, newHome_EDT_familyName, getString(R.string.familyName));
+            if (phoneinput && nicknameinput && familyinput) {
                 readData(FirebaseDatabase.getInstance().getReference(getString(R.string.families)), new GetDataListener() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(userInputNickname)) {
                             newHome_EDT_homeName.setError("Nickname Already Exists");
                         } else {
-                            addNewFamilyToDB(userInputNickname,familyName, managerPhone);
+                            addNewFamilyToDB(userInputNickname, familyName, managerPhone);
                             dialog.dismiss();
                             fillEditText(familyName, managerPhone, userInputNickname);
                         }
@@ -139,6 +147,7 @@ public class Activity_SignUp extends AppCompatActivity {
         }
     };
 
+    // fill edit text in signup activity
     private void fillEditText(String familyName, String managerPhone, String userInputNickname) {
         signUp_EDT_familyName.getEditText().setText(familyName);
         signUp_EDT_phoneNumber.getEditText().setText(managerPhone);
@@ -146,11 +155,12 @@ public class Activity_SignUp extends AppCompatActivity {
     }
 
 
-    private void addNewFamilyToDB(String key,String familyName,String managerPhone) {
+    private void addNewFamilyToDB(String key, String familyName, String managerPhone) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(getString(R.string.families));
-        Family family = new Family(key,familyName,managerPhone);
+        Family family = new Family(key, familyName, managerPhone);
         myRef.child(family.getKey()).setValue(family);
     }
+
 
     private View.OnClickListener haveAccountBTN = new View.OnClickListener() {
         @Override
@@ -159,26 +169,28 @@ public class Activity_SignUp extends AppCompatActivity {
         }
     };
 
+    // get values from edit text and if every thing ok create new user to the family
     private View.OnClickListener continueBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             showProgressDialog();
             boolean familyNickname;
             final String userInputNickname = signUp_EDT_familyNickname.getEditText().getText().toString().trim();
-            familyNickname = makeError(view,signUp_EDT_familyNickname,getString(R.string.nickname));
-            familyinput = makeError(view,signUp_EDT_familyName,getString(R.string.familyName));
-            userinput = makeError(view,signUp_EDT_userName,getString(R.string.userName));
-            phoneinput = makeError(view,signUp_EDT_phoneNumber,getString(R.string.phoneNumber));
-            passwordinput = makeError(view,signUp_EDT_password,getString(R.string.password));
-            if(familyinput && userinput && phoneinput && passwordinput && familyNickname){
-                if (isNetworkConnected()){
+            familyNickname = makeError(view, signUp_EDT_familyNickname, getString(R.string.nickname));
+            familyinput = makeError(view, signUp_EDT_familyName, getString(R.string.familyName));
+            userinput = makeError(view, signUp_EDT_userName, getString(R.string.userName));
+            phoneinput = makeError(view, signUp_EDT_phoneNumber, getString(R.string.phoneNumber));
+            passwordinput = makeError(view, signUp_EDT_password, getString(R.string.password));
+            if (familyinput && userinput && phoneinput && passwordinput && familyNickname) {
+                if (isNetworkConnected()) {
                     checkIfFamilyNameInDB(userInputNickname);
-                }else MySignalV2.getInstance().showToast(getString(R.string.network));
+                } else MySignalV2.getInstance().showToast(getString(R.string.network));
 
-            }else dismissDialog();
+            } else dismissDialog();
         }
     };
 
+    // checking if family nickname located in DB, if yes tell the user he need to change to a unique nickname
     private void checkIfFamilyNameInDB(final String userInputNickname) {
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.families));
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -202,6 +214,7 @@ public class Activity_SignUp extends AppCompatActivity {
         });
     }
 
+    // create user and store in DB and hashmap
     private User createNewUserAndStoreAtDB() {
 
         String key = signUp_EDT_familyNickname.getEditText().getText().toString().trim();
@@ -209,11 +222,11 @@ public class Activity_SignUp extends AppCompatActivity {
         String userName = signUp_EDT_userName.getEditText().getText().toString().trim();
         String phoneNumber = signUp_EDT_phoneNumber.getEditText().getText().toString().trim();
         String password = signUp_EDT_password.getEditText().getText().toString().trim();
-        User user = new User(key,familyName,userName,phoneNumber,password);
+        User user = new User(key, familyName, userName, phoneNumber, password);
 
         //Store at DB
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(getString(R.string.users));
-        userHashMapDB.put(phoneNumber,user);
+        userHashMapDB.put(phoneNumber, user);
         myRef.updateChildren(userHashMapDB);
         return user;
     }
@@ -234,22 +247,26 @@ public class Activity_SignUp extends AppCompatActivity {
         });
 
     }
-    private boolean makeError(View view,TextInputLayout inputLayout,String label) {
+
+    // make sure all the values not empty
+    private boolean makeError(View view, TextInputLayout inputLayout, String label) {
         Snackbar snackbar = Snackbar.make(view, "Please fill out these fields",
                 Snackbar.LENGTH_LONG);
         if (inputLayout.getEditText().length() == 0) {
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
-        snackbar.show();
-        inputLayout.setError(label + " should not be empty");
-        return false;
-        }else{
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+            snackbar.show();
+            inputLayout.setError(label + " should not be empty");
+            return false;
+        } else {
             snackbar.dismiss();
             inputLayout.setError(null);
             inputLayout.setErrorEnabled(false);
             return true;
         }
     }
+
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();

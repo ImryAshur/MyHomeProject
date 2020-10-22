@@ -2,14 +2,17 @@ package com.example.project.Activities;
 /*
 Developer - Imry Ashur
 */
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
+
 import com.example.project.CallBacks.GetDataListener;
 import com.example.project.Objects.User;
 import com.example.project.Others.MySignalV2;
@@ -30,7 +33,7 @@ public class Activity_LogIn extends AppCompatActivity {
     private TextInputEditText logIn_EDT_password;
     private MaterialButton logIn_BTN_loginbutton;
     private MaterialButton logIn_BTN_signUpButton;
-    private boolean phoneinput = false,passwordinput = false;
+    private boolean phoneinput = false, passwordinput = false;
     private ProgressDialog progressDialog;
 
     @Override
@@ -48,16 +51,18 @@ public class Activity_LogIn extends AppCompatActivity {
         logIn_BTN_loginbutton = findViewById(R.id.logIn_BTN_loginbutton);
         logIn_BTN_signUpButton = findViewById(R.id.logIn_BTN_signUpButton);
     }
+
     private void showProgressDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
     }
 
-    private void dismissDialog(){
+    private void dismissDialog() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
     }
+
     private View.OnClickListener signUpBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -82,8 +87,11 @@ public class Activity_LogIn extends AppCompatActivity {
                     readData(FirebaseDatabase.getInstance().getReference(getString(R.string.users)), new GetDataListener() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
+                            //Check if phone number located in DB
                             if (dataSnapshot.hasChild(userInputPhoneNumber)) {
                                 User user = dataSnapshot.child(userInputPhoneNumber).getValue(User.class);
+
+                                //Check if password is correct
                                 if (user.getPassword().equals(userInputPassword)) {
                                     startApp(user);
                                 } else {
@@ -109,7 +117,7 @@ public class Activity_LogIn extends AppCompatActivity {
 
 
                 }
-            }else MySignalV2.getInstance().showToast(getString(R.string.network));
+            } else MySignalV2.getInstance().showToast(getString(R.string.network));
         }
     };
 
@@ -122,7 +130,7 @@ public class Activity_LogIn extends AppCompatActivity {
         Gson gson = new Gson();
         String parseUser = gson.toJson(user);
         Intent intent = new Intent(Activity_LogIn.this, Activity_Main.class);
-        intent.putExtra(Activity_Main.EXTRA_KEY_USER,parseUser);
+        intent.putExtra(Activity_Main.EXTRA_KEY_USER, parseUser);
         dismissDialog();
         startActivity(intent);
         finish();
@@ -146,7 +154,7 @@ public class Activity_LogIn extends AppCompatActivity {
 
     }
 
-    private boolean makeError(View view,TextInputEditText inputLayout,String label) {
+    private boolean makeError(View view, TextInputEditText inputLayout, String label) {
         Snackbar snackbar = Snackbar.make(view, "Please fill out these fields",
                 Snackbar.LENGTH_LONG);
         if (inputLayout.length() == 0) {
@@ -156,7 +164,7 @@ public class Activity_LogIn extends AppCompatActivity {
             inputLayout.setError(label + " should not be empty");
             return false;
 
-        }else{
+        } else {
             snackbar.dismiss();
             inputLayout.setError(null);
             return true;

@@ -2,6 +2,7 @@ package com.example.project.Activities;
 /*
 Developer - Imry Ashur
 */
+
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bumptech.glide.Glide;
 import com.example.project.Adapters.Adapter_Event;
 import com.example.project.CallBacks.CallBack_Calendar;
@@ -30,6 +33,7 @@ import com.example.project.CallBacks.GetDataListener;
 import com.example.project.Others.MySharedPreferencesV4;
 import com.example.project.Objects.MyEvent;
 import com.example.project.Objects.User;
+import com.example.project.Others.MySignalV2;
 import com.example.project.R;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -41,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +81,7 @@ public class Activity_Main extends AppCompatActivity {
     private ImageView main_IMG_plus;
     private ImageView main_IMG_background;
     private ArrayList<MyEvent> eventsArray = new ArrayList<>();
-    private int mDateClicked ;
+    private int mDateClicked;
     private BroadcastReceiver myReceiver;
     private LocalBroadcastManager localBroadcastManager;
     private boolean free = true;
@@ -92,6 +97,7 @@ public class Activity_Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Get receiver from new event activity and remove / edit / add event
         myReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -130,47 +136,51 @@ public class Activity_Main extends AppCompatActivity {
         getFamilyMembers();
 
 
-
-
     }
 
+    // add events that was in SP
     private void putEventsFromHashMaps(HashMap<String, MyEvent> hashMap) {
-        if (hashMap.size() > 0){
-        Log.d(TAG, "putEventsFromHashMaps: " + hashMap.size());
+        if (hashMap.size() > 0) {
+            Log.d(TAG, "putEventsFromHashMaps: " + hashMap.size());
             for (MyEvent myEvent : hashMap.values()) {
                 fragment_calendar.getCalendar_SPC_calendar().addEvent(myEvent);
                 if (currentDate.equals(myEvent.getDate())) {
                     eventsArray.add(myEvent);
                 }
             }
-            if (eventsArray.size() > 0 )
+            if (eventsArray.size() > 0)
                 updatedData(eventsArray);
         }
 
     }
 
-    private HashMap<String,MyEvent> getHashMapDataFromSP(String ref) {
-        HashMap<String,MyEvent> hashMap = new HashMap<>();
+    // get hashmap events from SP
+    private HashMap<String, MyEvent> getHashMapDataFromSP(String ref) {
+        HashMap<String, MyEvent> hashMap = new HashMap<>();
         String hashMapString = MySharedPreferencesV4.getInstance().getString(ref, "");
         if (hashMapString.length() > 0) {
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, MyEvent>>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, MyEvent>>() {
+            }.getType();
             hashMap = gson.fromJson(hashMapString, type);
         }
         Log.d(TAG, "getDataFromSP: " + hashMap.size());
         return hashMap;
     }
 
+    // get hashmap family members from SP
     private void getHashMapMembersFromSP(String ref) {
         String hashMapString = MySharedPreferencesV4.getInstance().getString(ref, "");
         if (hashMapString.length() > 0) {
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             hashMapFamilyMembersNames = gson.fromJson(hashMapString, type);
-        }else hashMapFamilyMembersNames = new HashMap<>();
+        } else hashMapFamilyMembersNames = new HashMap<>();
 
         Log.d(TAG, "getDataFromSP: " + hashMapFamilyMembersNames.size());
 
     }
 
+    // get family members from DB
     private void getFamilyMembers() {
         Log.d(TAG, "onDataChange: ");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(DB_FAMILY_MEMBERS);
@@ -230,6 +240,8 @@ public class Activity_Main extends AppCompatActivity {
                 .into(main_IMG_background);
     }
 
+
+    // Close receiver when the activity shut down
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -245,6 +257,8 @@ public class Activity_Main extends AppCompatActivity {
         super.onStop();
     }
 
+
+    // set recevier
     @Override
     protected void onResume() {
         super.onResume();
@@ -259,6 +273,7 @@ public class Activity_Main extends AppCompatActivity {
         localBroadcastManager.registerReceiver(myReceiver, intentFilter);
     }
 
+
     private void getCurrentDate() {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -266,6 +281,7 @@ public class Activity_Main extends AppCompatActivity {
         calendarClickedDate = currentDate;
     }
 
+    //Remove Event from calendar, arraylist and hashmap
     private void removeEventFromCalendar() {
         Log.d(TAG, "removeEventFromCalendar: " + eventsArray);
         fragment_calendar.getCalendar_SPC_calendar().removeEvent(clickedEvent);
@@ -286,7 +302,8 @@ public class Activity_Main extends AppCompatActivity {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 //init Event From SP
-                if (dataSnapshot.getKey().charAt(0) == 'f') putEventsFromHashMaps(hashMapFamilyEvents);
+                if (dataSnapshot.getKey().charAt(0) == 'f')
+                    putEventsFromHashMaps(hashMapFamilyEvents);
                 else putEventsFromHashMaps(hashMapUserEvents);
 
                 Log.d(TAG, "onSuccess: " + dataSnapshot.getKey().charAt(0));
@@ -331,7 +348,7 @@ public class Activity_Main extends AppCompatActivity {
         }
     }
 
-
+    // add new event to calendar, arraylist and upload to DB
     private void createNewEvent(MyEvent myEvent) {
         fragment_calendar.getCalendar_SPC_calendar().addEvent(myEvent);
         if (calendarClickedDate.equals(myEvent.getDate())) {
@@ -369,7 +386,7 @@ public class Activity_Main extends AppCompatActivity {
 
     }
 
-
+    // get user from the previous activity
     private void getUser() {
         Intent intent = getIntent();
         String tempUser = intent.getStringExtra(EXTRA_KEY_USER);
@@ -378,18 +395,19 @@ public class Activity_Main extends AppCompatActivity {
             navHeader_LBL_userName.setText(user.getUserName());
 
         } else {
-            Log.d(TAG, "getUser: FAILD!!!!!!!!!!!");
+            MySignalV2.getInstance().showToast("Something went wrong, Please restart the App");
         }
 
     }
 
+    // set keys for SP and DB
     private void setKeys() {
         KEY_FAMILY_MEMBERS = user.getKey() + "_FAMILY_MEMBERS";
         KEY_FAMILY_EVENTS = user.getKey() + "_FAMILY_EVENTS";
         KEY_USER_EVENTS = user.getUserName() + "_USER_EVENTS";
 
         DB_FAMILY_EVENTS = "families/" + user.getKey() + "/familyMyEvents";
-        DB_USER_EVENTS ="users/" + user.getPhone() + "/userMyEvents";
+        DB_USER_EVENTS = "users/" + user.getPhone() + "/userMyEvents";
         DB_FAMILY_MEMBERS = "families/" + user.getKey() + "/familyMembers";
 
     }
@@ -406,6 +424,7 @@ public class Activity_Main extends AppCompatActivity {
     }
 
 
+    // set data and adapter to recycle view
     private void updatedData(ArrayList itemsArrayList) {
         if (adapter_event == null) {
             adapter_event = new Adapter_Event(this, itemsArrayList);
@@ -424,6 +443,8 @@ public class Activity_Main extends AppCompatActivity {
         }
     };
 
+
+    // side menu options
     private NavigationView.OnNavigationItemSelectedListener menuListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -447,6 +468,7 @@ public class Activity_Main extends AppCompatActivity {
 
     };
 
+    // upload hashMap to SP
     private void parseHashMapToStringAndUploadToSP(HashMap<String, MyEvent> hashMap, String path) {
         String hashMapString = new Gson().toJson(hashMap);
         MySharedPreferencesV4.getInstance().putString(path, hashMapString);
@@ -462,7 +484,7 @@ public class Activity_Main extends AppCompatActivity {
         finish();
     }
 
-
+    // init fragments and callbacks
     private void initFragments() {
         fragment_list = new Fragment_List();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -475,6 +497,30 @@ public class Activity_Main extends AppCompatActivity {
         FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
         transaction1.replace(R.id.main_SPC_calendar, fragment_calendar);
         transaction1.commit();
+    }
+
+    // set progress dialog
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Events...");
+        progressDialog.show();
+    }
+
+    private void dismissDialog() {
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    // start new event Activity if its for edit event send also the current event
+    private void startNewEventActivity(String myEvent) {
+        Intent intent = new Intent(Activity_Main.this, Activity_NewEvent.class);
+        intent.putExtra(Activity_NewEvent.EXTRA_KEY_USER_FAMILY_NAME, user.getFamilyName());
+        intent.putExtra(Activity_NewEvent.EXTRA_KEY_USER_PHONE_NUMBER, user.getPhone());
+        intent.putExtra(Activity_NewEvent.EXTRA_KEY_DATE, calendarClickedDate);
+        if (myEvent.length() > 0) {
+            intent.putExtra(Activity_NewEvent.EXTRA_KEY_USER_EVENT, myEvent);
+        }
+        startActivity(intent);
     }
 
 //    ------------------ callBack Calendar ----------
@@ -498,16 +544,6 @@ public class Activity_Main extends AppCompatActivity {
         }
     };
 
-    private void showProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading Events...");
-        progressDialog.show();
-    }
-
-    private void dismissDialog(){
-        if (progressDialog.isShowing())
-            progressDialog.dismiss();
-    }
 
     //    ------------------ callBack List ----------
     Adapter_Event.EventItemClickListener eventItemClickListener = new Adapter_Event.EventItemClickListener() {
@@ -519,15 +555,6 @@ public class Activity_Main extends AppCompatActivity {
         }
     };
 
-    private void startNewEventActivity(String myEvent) {
-        Intent intent = new Intent(Activity_Main.this, Activity_NewEvent.class);
-        intent.putExtra(Activity_NewEvent.EXTRA_KEY_USER_FAMILY_NAME, user.getFamilyName());
-        intent.putExtra(Activity_NewEvent.EXTRA_KEY_USER_PHONE_NUMBER, user.getPhone());
-        intent.putExtra(Activity_NewEvent.EXTRA_KEY_DATE, calendarClickedDate);
-        if (myEvent.length() > 0) {
-            intent.putExtra(Activity_NewEvent.EXTRA_KEY_USER_EVENT, myEvent);
-        }
-        startActivity(intent);
-    }
+
 }
 

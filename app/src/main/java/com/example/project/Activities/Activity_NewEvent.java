@@ -2,9 +2,11 @@ package com.example.project.Activities;
 /*
 Developer - Imry Ashur
 */
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -21,6 +23,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
 import com.example.project.Others.MySharedPreferencesV4;
 import com.example.project.Objects.MyEvent;
 import com.example.project.R;
@@ -30,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,7 +89,6 @@ public class Activity_NewEvent extends AppCompatActivity {
         setDropDownMenu(newEvent_BTN_color, colorList);
 
         //listeners
-
         newEvent_BTN_color.setOnItemClickListener(colorPicker);
         newEvent_EDT_date.setOnClickListener(datePicker);
         newEvent_EDT_timeStart.setOnClickListener(timePicker);
@@ -106,6 +109,7 @@ public class Activity_NewEvent extends AppCompatActivity {
 
     }
 
+    // get values from Intent, if its edit get event object and set values + set memberList
     private void getMyIntent() {
         newEvent_BTN_createEvent.setOnClickListener(newEvent);
         newEvent_BTN_cancel.setOnClickListener(closeActivity);
@@ -114,6 +118,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         userPhone = intent.getStringExtra(EXTRA_KEY_USER_PHONE_NUMBER);
         newEvent_EDT_date.setText(intent.getStringExtra(EXTRA_KEY_DATE));
         String myEvent = intent.getStringExtra(EXTRA_KEY_USER_EVENT);
+
         if (myEvent != null) {
             event = new Gson().fromJson(myEvent, MyEvent.class);
             setProperties(event);
@@ -127,6 +132,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         }
     }
 
+    // if it's edit event set values in edit text
     private void setProperties(MyEvent event) {
         newEvent_BTN_createEvent.setText("edit");
         newEvent_BTN_cancel.setText("remove");
@@ -143,6 +149,7 @@ public class Activity_NewEvent extends AppCompatActivity {
 
     }
 
+    // get family members from SP
     private HashMap<String, String> getArrayListFromSP() {
         HashMap<String, String> hashMapFamilyMembersNames = new HashMap<>();
         String hashMapString = MySharedPreferencesV4.getInstance().getString(Activity_Main.KEY_FAMILY_MEMBERS, "");
@@ -154,6 +161,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         return hashMapFamilyMembersNames;
     }
 
+    // set checkbox with family names
     private void setMemberListCheckBox() {
         Log.d("pttt", "setMemberListCheckBox: ");
         HashMap<String, String> familyMembersNames = getArrayListFromSP();
@@ -167,6 +175,7 @@ public class Activity_NewEvent extends AppCompatActivity {
             }
         });
     }
+
 
     private void setCheckBoxClick(String[] listMembers) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(Activity_NewEvent.this);
@@ -187,6 +196,8 @@ public class Activity_NewEvent extends AppCompatActivity {
         mDialog.show();
     }
 
+
+    // set click on family member - add delete checkbox
     private void onClickMember(AlertDialog.Builder mBuilder, String[] listMembers) {
         mBuilder.setMultiChoiceItems(listMembers, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
@@ -200,6 +211,8 @@ public class Activity_NewEvent extends AppCompatActivity {
         });
     }
 
+
+    // get family members that chose and set his names
     private void getMembersSelected(AlertDialog.Builder mBuilder, final String[] listMembers) {
         mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -221,6 +234,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         textView.setAdapter(adapter);
     }
 
+    // make sure that values not empty
     private boolean makeError(EditText inputLayout, String label) {
         if (inputLayout.length() == 0) {
             inputLayout.setError(label + " should not be empty");
@@ -230,6 +244,7 @@ public class Activity_NewEvent extends AppCompatActivity {
             return true;
         }
     }
+
 
     private long parseDateToMilis(String eventDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -245,7 +260,7 @@ public class Activity_NewEvent extends AppCompatActivity {
     }
 
 
-    // Listeners methods
+    // color picker listener
     private AdapterView.OnItemClickListener colorPicker = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -253,6 +268,8 @@ public class Activity_NewEvent extends AppCompatActivity {
         }
     };
 
+
+    // new event method, get values from edit text and decide if it's edit event or new
     private View.OnClickListener newEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -277,6 +294,8 @@ public class Activity_NewEvent extends AppCompatActivity {
         }
     };
 
+
+    // edit event -> remove the old event from DB
     private boolean isEditEvent(boolean edit) {
         if (newEvent_BTN_createEvent.getText().charAt(0) == 'e') {
             edit = true;
@@ -287,6 +306,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         return edit;
     }
 
+    // create new event and send broadcast to main activity if its new event or just edit
     private void createNewEventAndSendBroadcast(boolean edit, String eventType, String members, String location, String date, String time, String description, boolean switchOn) {
         long dateInMilliseconds = parseDateToMilis(date);
         MyEvent myEvent = new MyEvent(eventType, members, location, date, dateInMilliseconds, time, description, colors[colorSelected], colorSelected, switchOn);
@@ -296,6 +316,7 @@ public class Activity_NewEvent extends AppCompatActivity {
             sendMyBroadcast(EDIT_EVENT_BROADCAST, mEvent);
         } else sendMyBroadcast(BROADCAST, mEvent);
     }
+
 
     private void sendMyBroadcast(String broadcast, String mEvent) {
         Intent intent = new Intent(broadcast);
@@ -310,6 +331,7 @@ public class Activity_NewEvent extends AppCompatActivity {
     }
 
 
+    // date picker method
     private View.OnClickListener datePicker = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -328,7 +350,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         }
     };
 
-
+    // time picker method
     private View.OnClickListener timePicker = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -338,6 +360,8 @@ public class Activity_NewEvent extends AppCompatActivity {
         }
     };
 
+
+    // set time on edit text
     private void timeDialog(final TextView time, final int minute, final int hour) {
         final TimePickerDialog timePickerDialog = new TimePickerDialog(Activity_NewEvent.this,
                 new TimePickerDialog.OnTimeSetListener() {
@@ -360,6 +384,7 @@ public class Activity_NewEvent extends AppCompatActivity {
     };
 
 
+    // remove event -> delete from DB and send remove event broadcast to main event
     private View.OnClickListener removeEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {

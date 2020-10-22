@@ -2,6 +2,7 @@ package com.example.project.Activities;
 /*
 Developer - Imry Ashur
 */
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -74,6 +75,7 @@ public class Activity_Settings extends AppCompatActivity {
         settings_SPC_nav.setNavigationItemSelectedListener(menuListener);
     }
 
+    // upload family member to SP before closing the activity
     @Override
     protected void onStop() {
         super.onStop();
@@ -81,6 +83,7 @@ public class Activity_Settings extends AppCompatActivity {
         MySharedPreferencesV4.getInstance().putString(Activity_Main.KEY_FAMILY_MEMBERS, hashMapString);
     }
 
+    // getting family members from SP
     private ArrayList<String> getArrayListFromSP() {
         ArrayList<String> familyMembers = new ArrayList<>();
         String hashMapString = MySharedPreferencesV4.getInstance().getString(Activity_Main.KEY_FAMILY_MEMBERS, "");
@@ -94,12 +97,15 @@ public class Activity_Settings extends AppCompatActivity {
         return familyMembers;
     }
 
+
     private void getFamilyMembersFromSP() {
         familyMembers = getArrayListFromSP();
         Log.d(TAG, "getFamilyMembersFromSP: " + familyMembers.size());
         if (familyMembers == null) familyMembers = new ArrayList<String>();
     }
 
+
+    // getting user from previous activity
     private void getUser() {
         Intent intent = getIntent();
         String tempUser = intent.getStringExtra(Activity_Main.EXTRA_KEY_USER);
@@ -107,10 +113,11 @@ public class Activity_Settings extends AppCompatActivity {
             user = new Gson().fromJson(tempUser, User.class);
             navHeader_LBL_userName.setText(user.getUserName());
         } else {
-            Log.d(TAG, "getUser: FAILD!!!!!!!!!!!");
+            MySignalV2.getInstance().showToast("Something went wrong please restart the App...");
         }
 
     }
+
 
     private void setSideMenu() {
         setSupportActionBar(settings_SPC_toolBar);
@@ -120,6 +127,8 @@ public class Activity_Settings extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
 
+
+    //set side menu options
     private NavigationView.OnNavigationItemSelectedListener menuListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -144,6 +153,8 @@ public class Activity_Settings extends AppCompatActivity {
 
     };
 
+
+    // start new activity and send the user inside the intent
     private void startNewActivity(Class newActivity, boolean parseUser) {
         Intent intent = new Intent(Activity_Settings.this, newActivity);
         if (parseUser) {
@@ -175,6 +186,8 @@ public class Activity_Settings extends AppCompatActivity {
         settings_LBL_password = findViewById(R.id.settings_LBL_password);
     }
 
+
+    // set listeners
     private View.OnClickListener detailsListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -197,12 +210,14 @@ public class Activity_Settings extends AppCompatActivity {
             openDialog(R.layout.dialog_add_delete_member);
             MaterialButton addMember_BTN_addMember = dialog.findViewById(R.id.addMember_BTN_addMember);
             MaterialButton addMember_BTN_removeMember = dialog.findViewById(R.id.addMember_BTN_removeMember);
-            addMember_BTN_addMember.setOnClickListener(addMember);
-            addMember_BTN_removeMember.setOnClickListener(addMember);
+            addMember_BTN_addMember.setOnClickListener(addRemoveMember);
+            addMember_BTN_removeMember.setOnClickListener(addRemoveMember);
         }
     };
 
-    private View.OnClickListener addMember = new View.OnClickListener() {
+    // get values from edit text and check if all the values are correct
+    // if it's ok remove / add member
+    private View.OnClickListener addRemoveMember = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             boolean userName, phoneNum;
@@ -213,21 +228,21 @@ public class Activity_Settings extends AppCompatActivity {
             userName = makeError(addMember_EDT_userName, getString(R.string.userName));
             phoneNum = makeError(addMember_EDT_phoneNumber, getString(R.string.phoneNumber));
 
-            if (inputUserName.equals(user.getUserName())){
+            if (inputUserName.equals(user.getUserName())) {
                 userName = false;
                 addMember_EDT_userName.setError("YOU CAN'T REMOVE YOUR ACCOUNT!");
             }
 
             if (((String) view.getTag()).equals("a")) {
                 addMemberToDB(userName, phoneNum, inputUserName, inputphoneNum);
-            }
-            else if (phoneNum && userName) {
+            } else if (phoneNum && userName) {
 
                 deleteMember(inputUserName, inputphoneNum, addMember_EDT_userName, addMember_EDT_phoneNumber);
             }
         }
     };
 
+    // adding new member to DB
     private void addMemberToDB(boolean userName, boolean phoneNum, String inputUserName, String inputphoneNum) {
         boolean password;
         TextInputEditText addMember_EDT_password = dialog.findViewById(R.id.addMember_EDT_password);
@@ -244,6 +259,7 @@ public class Activity_Settings extends AppCompatActivity {
         }
     }
 
+    // delete member from DB
     private void deleteMember(String inputUserName, String inputphoneNum, TextInputEditText addMember_EDT_userName
             , TextInputEditText addMember_EDT_phoneNumber) {
         int index = checkIfInFamilyMembers(inputUserName);
@@ -253,6 +269,8 @@ public class Activity_Settings extends AppCompatActivity {
         } else addMember_EDT_userName.setError("There Isn't Family Member In This Name...");
     }
 
+
+    // checking if phone number located in DB
     private void checkPhoneNumberInDB(final String inputphoneNum, final TextInputEditText addMember_EDT_phoneNumber, final int index, final String inputUserName) {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Activity_Main.DB_FAMILY_MEMBERS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -275,6 +293,7 @@ public class Activity_Settings extends AppCompatActivity {
         });
     }
 
+    // remove family member from arraylist,hashmap,DB
     private void removeFamilyMember(DatabaseReference ref, String inputphoneNum, int index, String inputUserName, User user, TextInputEditText addMember_EDT_phoneNumber) {
         if (user.getUserName().equals(inputUserName)) {
             addMember_EDT_phoneNumber.setError(null);
@@ -287,6 +306,7 @@ public class Activity_Settings extends AppCompatActivity {
         } else addMember_EDT_phoneNumber.setError("User Name And Phone Number Didn't Match!");
     }
 
+    // checking if there is user name in this family
     private int checkIfInFamilyMembers(String inputUserName) {
         for (int i = 0; i < familyMembers.size(); i++) {
             Log.d(TAG, "onClick: " + familyMembers.get(i));
@@ -296,6 +316,7 @@ public class Activity_Settings extends AppCompatActivity {
         }
         return -1;
     }
+
 
     private void addUserToDB(String path, User value) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
@@ -307,6 +328,8 @@ public class Activity_Settings extends AppCompatActivity {
         ref.child(phone).removeValue();
     }
 
+
+    // set listeners
     private View.OnClickListener changePasswordsListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -339,6 +362,7 @@ public class Activity_Settings extends AppCompatActivity {
         }
     };
 
+    // make sure its the same password
     private boolean isSamePassword(boolean samePassword, TextInputEditText changePassword_EDT_currentPassword, TextInputEditText changePassword_EDT_verifyPassword, String newPassword, String verfiyPassword) {
         if (newPassword.equals(verfiyPassword) && newPassword.length() > 0) {
             samePassword = correctInput(changePassword_EDT_currentPassword);
@@ -348,6 +372,7 @@ public class Activity_Settings extends AppCompatActivity {
         return samePassword;
     }
 
+    // checking if the input password equals to user password
     private boolean currentPassMatchInput(boolean userPassword, TextInputEditText changePassword_EDT_currentPassword, String currentPassword) {
         if (currentPassword.equals(user.getPassword())) {
             userPassword = correctInput(changePassword_EDT_currentPassword);
@@ -357,9 +382,11 @@ public class Activity_Settings extends AppCompatActivity {
         return userPassword;
     }
 
+    // set error on edit text
     private void putError(TextInputEditText changePassword_EDT_currentPassword, String text) {
         changePassword_EDT_currentPassword.setError(text);
     }
+
 
     private boolean correctInput(TextInputEditText changePassword_EDT_currentPassword) {
         boolean userPassword;
@@ -369,6 +396,7 @@ public class Activity_Settings extends AppCompatActivity {
     }
 
 
+    // update password in DB when changing password
     private void uptadePasswordInDB(String newPassword) {
         updateDB("users/" + user.getPhone(), newPassword);
         updateDB(Activity_Main.DB_FAMILY_MEMBERS + "/" + user.getPhone(), newPassword);
@@ -389,6 +417,8 @@ public class Activity_Settings extends AppCompatActivity {
         dialog.show();
     }
 
+
+    // build dialog with family members list
     private void displayFamilyMembers() {
         Log.d(TAG, "displayFamilyMembers: ");
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(Activity_Settings.this);
@@ -428,6 +458,7 @@ public class Activity_Settings extends AppCompatActivity {
                 details_LBL_userName, details_LBL_phoneNumber, details_LBL_password);
     }
 
+    // setting values on user details
     private void setTextOnEditText(MaterialTextView details_LBL_familyNickname, MaterialTextView details_LBL_familyName,
                                    MaterialTextView details_LBL_userName, MaterialTextView details_LBL_phoneNumber, MaterialTextView details_LBL_password) {
         details_LBL_familyNickname.setText(user.getKey());
@@ -437,6 +468,7 @@ public class Activity_Settings extends AppCompatActivity {
         details_LBL_password.setText(user.getPassword());
     }
 
+    // make sure the edit text not empty
     private boolean makeError(EditText inputLayout, String label) {
         if (inputLayout.length() == 0) {
             inputLayout.setError(label + " should not be empty");

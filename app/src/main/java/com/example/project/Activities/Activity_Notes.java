@@ -2,6 +2,7 @@ package com.example.project.Activities;
 /*
 Developer - Imry Ashur
 */
+
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.bumptech.glide.Glide;
 import com.example.project.Adapters.Adapter_Notes;
 import com.example.project.Fragments.Fragment_Note;
@@ -40,6 +43,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -103,11 +107,10 @@ public class Activity_Notes extends AppCompatActivity {
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(notes_IMG_background);
-
-
-
     }
 
+
+    //set keys for SP and DB after get user
     private void setKeys() {
         SP_KEY_FAMILY_NOTES = user.getKey() + "_FAMILY_NOTES";
         SP_KEY_USER_NOTES = user.getUserName() + "_USER_NOTES";
@@ -116,6 +119,8 @@ public class Activity_Notes extends AppCompatActivity {
 
     }
 
+
+    // upload hashmaps to SP before activity close
     @Override
     protected void onStop() {
         parseHashMapToStringAndUploadToSP(hashMapFamilyNotes, SP_KEY_FAMILY_NOTES);
@@ -123,6 +128,8 @@ public class Activity_Notes extends AppCompatActivity {
         super.onStop();
     }
 
+
+    // get user from intent
     private void getUser() {
         Intent intent = getIntent();
         String tempUser = intent.getStringExtra(Activity_Main.EXTRA_KEY_USER);
@@ -135,11 +142,14 @@ public class Activity_Notes extends AppCompatActivity {
 
     }
 
+
+    // get hashmap with notes from SP
     private HashMap<String, Note> getHashMapDataFromSP(String ref) {
         HashMap<String, Note> hashMap = new HashMap<>();
         String hashMapString = MySharedPreferencesV4.getInstance().getString(ref, "");
         if (hashMapString.length() > 0) {
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, Note>>() {}.getType();
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, Note>>() {
+            }.getType();
             hashMap = new Gson().fromJson(hashMapString, type);
         }
         Log.d(TAG, "getDataFromSP: " + hashMap.size());
@@ -174,10 +184,13 @@ public class Activity_Notes extends AppCompatActivity {
         notes_SPC_drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
+
     private void parseHashMapToStringAndUploadToSP(HashMap<String, Note> hashMap, String path) {
         String hashMapString = new Gson().toJson(hashMap);
         MySharedPreferencesV4.getInstance().putString(path, hashMapString);
     }
+
+    //set side menu options
     private NavigationView.OnNavigationItemSelectedListener menuListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -201,6 +214,7 @@ public class Activity_Notes extends AppCompatActivity {
 
     };
 
+    // start new activity and send user inside the intent
     private void startNewActivity(Class newActivity, boolean parseUser) {
         Intent intent = new Intent(Activity_Notes.this, newActivity);
         if (parseUser) {
@@ -219,6 +233,8 @@ public class Activity_Notes extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    // first getting notes from SP
     private void putNotesFromHashMaps(HashMap<String, Note> hashMap) {
         if (hashMap.size() > 0) {
             Log.d(TAG, "putEventsFromHashMaps: " + hashMap.size());
@@ -239,6 +255,7 @@ public class Activity_Notes extends AppCompatActivity {
         arrayIndexes.put(note.getKey(), note);
     }
 
+
     private void initNotes(String path) {
         readData(FirebaseDatabase.getInstance().getReference(path), new GetDataListener() {
             @Override
@@ -248,7 +265,7 @@ public class Activity_Notes extends AppCompatActivity {
                     putNotesFromHashMaps(hashMapFamilyNotes);
                 else putNotesFromHashMaps(hashMapUserNotes);
 
-                // init Notes From DB That Not In SP
+                // then init Notes From DB That Not In SP
                 if (dataSnapshot != null) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         if (dataSnapshot.getKey().charAt(0) == 'f' && (!hashMapFamilyNotes.containsKey(ds.getKey()))) {
@@ -304,6 +321,8 @@ public class Activity_Notes extends AppCompatActivity {
         }
     };
 
+
+    // open dialog new note
     private void openDialog(Note noteClicked) {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_new_note);
@@ -317,6 +336,7 @@ public class Activity_Notes extends AppCompatActivity {
         dialog.show();
     }
 
+    // if it's edit note set values
     private void setProperties(Note note) {
         newNote_BTN_go.setText("edit");
         newNote_BTN_cancel.setText("Remove");
@@ -327,9 +347,9 @@ public class Activity_Notes extends AppCompatActivity {
         newNote_BTN_share.setChecked(note.isShare());
 
         newNote_BTN_cancel.setOnClickListener(removeNote);
-
-
     }
+
+
     private void removeNoteFromArrayAndHashMapAndDB() {
         notesArray.remove(arrayIndexes.get(lastNoteClicked.getKey()));
         arrayIndexes.remove(lastNoteClicked.getKey());
@@ -342,6 +362,8 @@ public class Activity_Notes extends AppCompatActivity {
         }
         updatedData(notesArray);
     }
+
+    // set listeners
     private View.OnClickListener removeNote = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -360,13 +382,15 @@ public class Activity_Notes extends AppCompatActivity {
         }
     };
 
+
+    // get values from edit text and decide create / remove notes
     private View.OnClickListener newNoteGoBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             boolean titleInput, textInput;
             String title = newNote_EDT_title.getText().toString().trim();
             String text = newNote_EDT_text.getText().toString().trim();
-            boolean repeat = newNote_BTN_share.isChecked();
+            boolean share = newNote_BTN_share.isChecked();
             titleInput = makeError(newNote_EDT_title, "Title");
             textInput = makeError(newNote_EDT_text, "Text");
 
@@ -376,14 +400,15 @@ public class Activity_Notes extends AppCompatActivity {
                     removeNoteFromArrayAndHashMapAndDB();
                 }
 
-                createNewNote(title, text, repeat);
+                createNewNote(title, text, share);
             }
 
         }
     };
 
-    private void createNewNote(String title, String text, boolean repeat) {
-        Note note = new Note(title, text, repeat);
+
+    private void createNewNote(String title, String text, boolean share) {
+        Note note = new Note(title, text, share);
         addNoteFromArrayAndHashMapAndDB(note);
 
         MySignalV2.getInstance().showToast("Done!");
@@ -391,20 +416,19 @@ public class Activity_Notes extends AppCompatActivity {
         dialog.dismiss();
     }
 
+
     private void addNoteFromArrayAndHashMapAndDB(Note note) {
         notesArray.add(note);
         arrayIndexes.put(note.getKey(), note);
-        if (note.isShare()){
+        if (note.isShare()) {
             uploadNewNoteToDB(note, DB_FAMILY_NOTES);
-            hashMapFamilyNotes.put(note.getKey(),note);
-        }
-        else {
+            hashMapFamilyNotes.put(note.getKey(), note);
+        } else {
             uploadNewNoteToDB(note, DB_USER_NOTES);
-            hashMapUserNotes.put(note.getKey(),note);
+            hashMapUserNotes.put(note.getKey(), note);
         }
         updatedData(notesArray);
     }
-
 
 
     private void uploadNewNoteToDB(Note note, String path) {
@@ -418,6 +442,7 @@ public class Activity_Notes extends AppCompatActivity {
     }
 
 
+    // set adapter notes with notes array
     private void updatedData(ArrayList itemsArrayList) {
         if (adapterNotes == null) {
             adapterNotes = new Adapter_Notes(itemsArrayList, this);
@@ -429,6 +454,7 @@ public class Activity_Notes extends AppCompatActivity {
         }
     }
 
+    // callback for click on note
     Adapter_Notes.NoteItemClickListener noteItemClickListener = new Adapter_Notes.NoteItemClickListener() {
         @Override
         public void itemClicked(Note note, int position) {
@@ -446,6 +472,7 @@ public class Activity_Notes extends AppCompatActivity {
         newNote_BTN_share = dialog.findViewById(R.id.newNote_BTN_share);
     }
 
+    // init fragment and callback
     private void initFragment() {
         fragment_note = new Fragment_Note();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -453,6 +480,8 @@ public class Activity_Notes extends AppCompatActivity {
         transaction.commit();
     }
 
+
+    // make sure the edit text isn't empty
     private boolean makeError(EditText inputLayout, String label) {
         if (inputLayout.length() == 0) {
             inputLayout.setError(label + " should not be empty");

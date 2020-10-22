@@ -15,9 +15,10 @@
         android:textSize="16sp"
         android:textColor="@color/black"/>
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:src="@drawable/ic_logo"
+        android:layout_marginTop="5dp"
         android:layout_toStartOf="@+id/newEvent_LBL_header"/>
 
     <LinearLayout
@@ -164,7 +165,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="5dp"
             android:padding="5dp"
             android:backgroundTint="@color/red"
             android:text="canel" />
