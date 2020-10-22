@@ -404,7 +404,7 @@ public class Activity_Main extends AppCompatActivity {
     private void setKeys() {
         KEY_FAMILY_MEMBERS = user.getKey() + "_FAMILY_MEMBERS";
         KEY_FAMILY_EVENTS = user.getKey() + "_FAMILY_EVENTS";
-        KEY_USER_EVENTS = user.getUserName() + "_USER_EVENTS";
+        KEY_USER_EVENTS = user.getUserName()+ user.getKey() + "_USER_EVENTS";
 
         DB_FAMILY_EVENTS = "families/" + user.getKey() + "/familyMyEvents";
         DB_USER_EVENTS = "users/" + user.getPhone() + "/userMyEvents";

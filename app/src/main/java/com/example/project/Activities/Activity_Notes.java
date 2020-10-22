@@ -113,7 +113,7 @@ public class Activity_Notes extends AppCompatActivity {
     //set keys for SP and DB after get user
     private void setKeys() {
         SP_KEY_FAMILY_NOTES = user.getKey() + "_FAMILY_NOTES";
-        SP_KEY_USER_NOTES = user.getUserName() + "_USER_NOTES";
+        SP_KEY_USER_NOTES = user.getUserName() + user.getKey() + "_USER_NOTES";
         DB_FAMILY_NOTES = "families/" + user.getKey() + "/familyNotes";
         DB_USER_NOTES = "users/" + user.getPhone() + "/userNotes";
 

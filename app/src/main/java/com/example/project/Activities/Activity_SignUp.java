@@ -121,13 +121,16 @@ public class Activity_SignUp extends AppCompatActivity {
             nicknameinput = makeError(view, newHome_EDT_homeName, getString(R.string.nickname));
             familyinput = makeError(view, newHome_EDT_familyName, getString(R.string.familyName));
             if (phoneinput && nicknameinput && familyinput) {
+                showProgressDialog();
                 readData(FirebaseDatabase.getInstance().getReference(getString(R.string.families)), new GetDataListener() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(userInputNickname)) {
                             newHome_EDT_homeName.setError("Nickname Already Exists");
+                            dismissDialog();
                         } else {
                             addNewFamilyToDB(userInputNickname, familyName, managerPhone);
+                            dismissDialog();
                             dialog.dismiss();
                             fillEditText(familyName, managerPhone, userInputNickname);
                         }
