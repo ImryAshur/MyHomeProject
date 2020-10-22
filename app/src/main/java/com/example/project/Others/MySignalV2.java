@@ -5,12 +5,18 @@ package com.example.project.Others;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.Toast;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class MySignalV2 {
 
@@ -51,6 +57,8 @@ public class MySignalV2 {
             }
         });
     }
+
+
 
     public void touched() {
         vibrate(10);

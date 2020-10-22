@@ -1,5 +1,7 @@
 package com.example.project.Fragments;
-
+/*
+Developer - Imry Ashur
+*/
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,7 +66,7 @@ public class Fragment_Calendar extends Fragment {
         calendar_SPC_calendar.setUseThreeLetterAbbreviation(true);
         calendar_SPC_calendar.setShouldDrawDaysHeader(true);
         callBack_calendar.setHeaderText(Calendar.getInstance().get(Calendar.DATE) + " " + dateFormatForMonth.format(calendar_SPC_calendar.getFirstDayOfCurrentMonth()));
-        //callBack_calendar.getEventFromCalendar(calendar_SPC_calendar,new Date(System.currentTimeMillis()),2);
+
     }
 
     private void findViews(View view) {

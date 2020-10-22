@@ -28,4 +28,13 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="phoneNumber">Phone Number</string>
+    <string name="password">Password</string>
+    <string name="familyName">family Name</string>
+    <string name="userName">User Name</string>
+    <string name="nickname">Nickname</string>
+    <string name="families">families</string>
+    <string name="users">users</string>
+    <string name="loading">Loading Please Wait...</string>
+    <string name="network">Make Sure You Have Network!</string>
 </resources>

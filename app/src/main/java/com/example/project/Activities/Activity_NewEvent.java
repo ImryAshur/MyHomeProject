@@ -1,10 +1,10 @@
 package com.example.project.Activities;
-
-import androidx.annotation.NonNull;
+/*
+Developer - Imry Ashur
+*/
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -21,22 +21,15 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
-import com.example.project.CallBacks.GetDataListener;
 import com.example.project.Others.MySharedPreferencesV4;
-import com.example.project.Objects.Family;
 import com.example.project.Objects.MyEvent;
 import com.example.project.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +45,8 @@ public class Activity_NewEvent extends AppCompatActivity {
     public static final String BROADCAST = "com.example.project.NEW_LOCATION_DETECTED";
     public static final String REMOVE_EVENT_BROADCAST = "com.example.project.REMOVE_EVENT_BROADCAST";
     public static final String EDIT_EVENT_BROADCAST = "com.example.project.EDIT_EVENT_BROADCAST";
+
+
     private TextView newEvent_LBL_header;
     private AutoCompleteTextView newEvent_LST_eventType;
     private TextInputEditText newEvent_LST_members;
@@ -65,10 +60,8 @@ public class Activity_NewEvent extends AppCompatActivity {
     private MaterialButton newEvent_BTN_cancel;
     private String userFamilyName;
     private String userPhone;
-    private Family family;
     private MyEvent event;
     private boolean[] checkedItems;
-    private ArrayList<String> familyMembers = new ArrayList<>();
     private ArrayList<Integer> mUserItems = new ArrayList<>();
 
     private DatePickerDialog picker;
@@ -149,12 +142,13 @@ public class Activity_NewEvent extends AppCompatActivity {
         colorSelected = event.getColorArrNum();
 
     }
-    private HashMap<String,String> getArrayListFromSP(){
-        HashMap<String,String> hashMapFamilyMembersNames = new HashMap<>();
-        // TODO: 19/10/2020 change ashur to public name
-        String hashMapString = MySharedPreferencesV4.getInstance().getString("ashur_FAMILY_MEMBERS","");
-        if (hashMapString.length() > 0 ){
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+
+    private HashMap<String, String> getArrayListFromSP() {
+        HashMap<String, String> hashMapFamilyMembersNames = new HashMap<>();
+        String hashMapString = MySharedPreferencesV4.getInstance().getString(Activity_Main.KEY_FAMILY_MEMBERS, "");
+        if (hashMapString.length() > 0) {
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+            }.getType();
             hashMapFamilyMembersNames = new Gson().fromJson(hashMapString, type);
         }
         return hashMapFamilyMembersNames;
@@ -162,70 +156,64 @@ public class Activity_NewEvent extends AppCompatActivity {
 
     private void setMemberListCheckBox() {
         Log.d("pttt", "setMemberListCheckBox: ");
-        HashMap<String,String> familyMembersNames = getArrayListFromSP();
-        final String[]  listMembers = (String[]) familyMembersNames.values().toArray(new String[0]);
+        HashMap<String, String> familyMembersNames = getArrayListFromSP();
+        final String[] listMembers = (String[]) familyMembersNames.values().toArray(new String[0]);
 
         checkedItems = new boolean[familyMembersNames.size()];
         newEvent_LST_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(Activity_NewEvent.this);
-                mBuilder.setTitle("Choose Members");
-                mBuilder.setMultiChoiceItems(listMembers, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        if (b) {
-                            mUserItems.add(i);
-                        } else {
-                            mUserItems.remove((Integer.valueOf(i)));
-                        }
-                    }
-                });
-
-                mBuilder.setCancelable(false);
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        String item = "";
-                        for (int i = 0; i < mUserItems.size(); i++) {
-                            item = item + listMembers[mUserItems.get(i)];
-                            if (i != mUserItems.size() - 1) {
-                                item = item + ", ";
-                            }
-                        }
-                        newEvent_LST_members.setText(item);
-                    }
-                });
-
-                mBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
+                setCheckBoxClick(listMembers);
             }
         });
     }
 
+    private void setCheckBoxClick(String[] listMembers) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(Activity_NewEvent.this);
+        mBuilder.setTitle("Choose Members");
+        onClickMember(mBuilder, listMembers);
 
-    public void readData(DatabaseReference ref, final GetDataListener listener) {
-        listener.onStart();
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        mBuilder.setCancelable(false);
+        getMembersSelected(mBuilder, listMembers);
+
+        mBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                listener.onSuccess(dataSnapshot);
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                listener.onFailure();
-            }
-
         });
 
+        AlertDialog mDialog = mBuilder.create();
+        mDialog.show();
+    }
+
+    private void onClickMember(AlertDialog.Builder mBuilder, String[] listMembers) {
+        mBuilder.setMultiChoiceItems(listMembers, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                if (b) {
+                    mUserItems.add(i);
+                } else {
+                    mUserItems.remove((Integer.valueOf(i)));
+                }
+            }
+        });
+    }
+
+    private void getMembersSelected(AlertDialog.Builder mBuilder, final String[] listMembers) {
+        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                String item = "";
+                for (int i = 0; i < mUserItems.size(); i++) {
+                    item = item + listMembers[mUserItems.get(i)];
+                    if (i != mUserItems.size() - 1) {
+                        item = item + ", ";
+                    }
+                }
+                newEvent_LST_members.setText(item);
+            }
+        });
     }
 
     private void setDropDownMenu(AutoCompleteTextView textView, String[] List) {
@@ -233,7 +221,7 @@ public class Activity_NewEvent extends AppCompatActivity {
         textView.setAdapter(adapter);
     }
 
-    private boolean makeError( EditText inputLayout, String label) {
+    private boolean makeError(EditText inputLayout, String label) {
         if (inputLayout.length() == 0) {
             inputLayout.setError(label + " should not be empty");
             return false;
@@ -268,7 +256,7 @@ public class Activity_NewEvent extends AppCompatActivity {
     private View.OnClickListener newEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            boolean eventCheck, membersCheck, dateCheck, timeCheck , edit = false;
+            boolean eventCheck, membersCheck, dateCheck, timeCheck, edit = false;
             String eventType = newEvent_LST_eventType.getText().toString().trim();
             String members = newEvent_LST_members.getText().toString().trim();
             String location = newEvent_EDT_location.getText().toString().trim();
@@ -276,30 +264,40 @@ public class Activity_NewEvent extends AppCompatActivity {
             String time = newEvent_EDT_timeStart.getText().toString().trim();
             String description = newEvent_EDT_description.getText().toString().trim();
             boolean switchOn = newEvent_SPC_shareSwitch.isChecked();
+
             eventCheck = makeError(newEvent_LST_eventType, "Event Type");
             membersCheck = makeError(newEvent_LST_members, "Participants");
             dateCheck = makeError(newEvent_EDT_date, "Date");
             timeCheck = makeError(newEvent_EDT_timeStart, "Time");
 
             if (eventCheck && membersCheck && dateCheck && timeCheck) {
-                if (newEvent_BTN_createEvent.getText().charAt(0) == 'e') {
-                    edit = true;
-                    if (event.isSwitchOn()) {
-                        removeFromDB("families/" + userFamilyName + "/familyMyEvents");
-                    } else removeFromDB("users/"+ userPhone+ "/userMyEvents");
-                }
-                long dateInMilliseconds = parseDateToMilis(date);
-                MyEvent myEvent = new MyEvent(eventType, members, location, date, dateInMilliseconds, time, description, colors[colorSelected], colorSelected, switchOn);
-                Gson gson = new Gson();
-                String mEvent = gson.toJson(myEvent);
-                if (edit){
-                    sendMyBroadcast(EDIT_EVENT_BROADCAST,mEvent);
-                }else sendMyBroadcast(BROADCAST,mEvent);
+                edit = isEditEvent(edit);
+                createNewEventAndSendBroadcast(edit, eventType, members, location, date, time, description, switchOn);
             }
         }
     };
 
-    private void sendMyBroadcast(String broadcast , String mEvent) {
+    private boolean isEditEvent(boolean edit) {
+        if (newEvent_BTN_createEvent.getText().charAt(0) == 'e') {
+            edit = true;
+            if (event.isSwitchOn()) {
+                removeFromDB(Activity_Main.DB_FAMILY_EVENTS);
+            } else removeFromDB(Activity_Main.DB_USER_EVENTS);
+        }
+        return edit;
+    }
+
+    private void createNewEventAndSendBroadcast(boolean edit, String eventType, String members, String location, String date, String time, String description, boolean switchOn) {
+        long dateInMilliseconds = parseDateToMilis(date);
+        MyEvent myEvent = new MyEvent(eventType, members, location, date, dateInMilliseconds, time, description, colors[colorSelected], colorSelected, switchOn);
+        Gson gson = new Gson();
+        String mEvent = gson.toJson(myEvent);
+        if (edit) {
+            sendMyBroadcast(EDIT_EVENT_BROADCAST, mEvent);
+        } else sendMyBroadcast(BROADCAST, mEvent);
+    }
+
+    private void sendMyBroadcast(String broadcast, String mEvent) {
         Intent intent = new Intent(broadcast);
         intent.putExtra(Activity_Main.EXTRA_KEY_EVENT, mEvent);
         LocalBroadcastManager.getInstance(Activity_NewEvent.this).sendBroadcast(intent);
@@ -362,14 +360,13 @@ public class Activity_NewEvent extends AppCompatActivity {
     };
 
 
-
     private View.OnClickListener removeEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (event.isSwitchOn()) removeFromDB("families/" + userFamilyName + "/familyMyEvents");
-            else removeFromDB("users/"+ userPhone+ "/userMyEvents");
+            if (event.isSwitchOn()) removeFromDB(Activity_Main.DB_FAMILY_EVENTS);
+            else removeFromDB(Activity_Main.DB_USER_EVENTS);
             String myEvent = new Gson().toJson(event);
-            sendMyBroadcast(REMOVE_EVENT_BROADCAST,myEvent);
+            sendMyBroadcast(REMOVE_EVENT_BROADCAST, myEvent);
             finish();
         }
     };

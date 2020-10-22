@@ -1,5 +1,7 @@
 package com.example.project.Activities;
-
+/*
+Developer - Imry Ashur
+*/
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +21,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.bumptech.glide.Glide;
 import com.example.project.Adapters.Adapter_Event;
 import com.example.project.CallBacks.CallBack_Calendar;
@@ -41,7 +41,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +52,14 @@ public class Activity_Main extends AppCompatActivity {
     public static final String TAG = "pttt";
     public static final String EXTRA_KEY_USER = "EXTRA_KEY_USER";
     public static final String EXTRA_KEY_EVENT = "EXTRA_KEY_EVENT";
+
+    public static String KEY_FAMILY_MEMBERS = "";
+    public static String KEY_FAMILY_EVENTS = "";
+    public static String KEY_USER_EVENTS = "";
+
+    public static String DB_FAMILY_EVENTS = "";
+    public static String DB_USER_EVENTS = "";
+    public static String DB_FAMILY_MEMBERS = "";
 
     private DrawerLayout main_SPC_drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -92,12 +99,10 @@ public class Activity_Main extends AppCompatActivity {
                 String mEvent = intent.getStringExtra(EXTRA_KEY_EVENT);
                 MyEvent myEvent = new Gson().fromJson(mEvent, MyEvent.class);
                 if (intent.getAction().equals(Activity_NewEvent.BROADCAST) && free) {
-                    Log.d(TAG, "onReceive: zzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
                     free = false;
                     createNewEvent(myEvent);
                 } else if (intent.getAction().equals(Activity_NewEvent.EDIT_EVENT_BROADCAST) && free) {
                     free = false;
-                    Log.d(TAG, "hereeeeeeeeeeeeeeeeeeeeeeeeee");
                     removeEventFromCalendar();
                     createNewEvent(myEvent);
                 } else if (intent.getAction().equals(Activity_NewEvent.REMOVE_EVENT_BROADCAST) && free) {
@@ -111,14 +116,15 @@ public class Activity_Main extends AppCompatActivity {
         initViews();
         initFragments();
         getUser();
-        getHashMapMembersFromSP(user.getKey() + "_FAMILY_MEMBERS");
-        hashMapFamilyEvents = getHashMapDataFromSP(user.getKey() + "_FAMILY_EVENTS");
-        hashMapUserEvents = getHashMapDataFromSP(user.getUserName() + "_USER_EVENTS");
+        setKeys();
+        getHashMapMembersFromSP(KEY_FAMILY_MEMBERS);
+        hashMapFamilyEvents = getHashMapDataFromSP(KEY_FAMILY_EVENTS);
+        hashMapUserEvents = getHashMapDataFromSP(KEY_USER_EVENTS);
         getCurrentDate();
         setSideMenu();
         initBackground();
-        initEvents("families/" + user.getKey() + "/familyMyEvents");
-        initEvents("users/" + user.getPhone() + "/userMyEvents");
+        initEvents(DB_FAMILY_EVENTS);
+        initEvents(DB_USER_EVENTS);
         main_IMG_plus.setOnClickListener(plusClick);
         main_SPC_nav.setNavigationItemSelectedListener(menuListener);
         getFamilyMembers();
@@ -155,7 +161,6 @@ public class Activity_Main extends AppCompatActivity {
     }
 
     private void getHashMapMembersFromSP(String ref) {
-
         String hashMapString = MySharedPreferencesV4.getInstance().getString(ref, "");
         if (hashMapString.length() > 0) {
             java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {}.getType();
@@ -168,27 +173,27 @@ public class Activity_Main extends AppCompatActivity {
 
     private void getFamilyMembers() {
         Log.d(TAG, "onDataChange: ");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("families/" + user.getKey() + "/familyMembers");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(DB_FAMILY_MEMBERS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d(TAG, "onDataChange1: " + user.getKey());
-                //ArrayList<String> familyMembers = MySharedPreferencesV4.getInstance().getArray(MySharedPreferencesV4.KEYS.SP_FAMILY_MEMBERS, new TypeToken<ArrayList<String>>() {});
+
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Log.d(TAG, "onDataChange2: ");
                     if (!(hashMapFamilyMembersNames.containsKey(ds.getKey()))) {
                         User user = ds.getValue(User.class);
                         Log.d(TAG, "onDataChange3: " + user.getUserName());
-                        //familyMembers.add(temp.getUserName());
                         hashMapFamilyMembersNames.put(user.getPhone(), user.getUserName());
                     }
 
                 }
                 Log.d(TAG, "FINISH GET FAMILY MEMBERS : " + hashMapFamilyMembersNames.size());
+
+                //upload Family members to SP
                 String hashMapString = gson.toJson(hashMapFamilyMembersNames);
-                MySharedPreferencesV4.getInstance().putString(user.getKey() + "_FAMILY_MEMBERS", hashMapString);
+                MySharedPreferencesV4.getInstance().putString(KEY_FAMILY_MEMBERS, hashMapString);
                 dismissDialog();
-                //MySharedPreferencesV4.getInstance().putArray(MySharedPreferencesV4.KEYS.SP_FAMILY_MEMBERS,familyMembers);
             }
 
             @Override
@@ -235,8 +240,8 @@ public class Activity_Main extends AppCompatActivity {
     @Override
     protected void onStop() {
         //Upload Events To SP
-        parseHashMapToStringAndUploadToSP(hashMapFamilyEvents, user.getKey() + "_FAMILY_EVENTS");
-        parseHashMapToStringAndUploadToSP(hashMapUserEvents, user.getUserName() + "_USER_EVENTS");
+        parseHashMapToStringAndUploadToSP(hashMapFamilyEvents, KEY_FAMILY_EVENTS);
+        parseHashMapToStringAndUploadToSP(hashMapUserEvents, KEY_USER_EVENTS);
         super.onStop();
     }
 
@@ -280,10 +285,13 @@ public class Activity_Main extends AppCompatActivity {
         readData(FirebaseDatabase.getInstance().getReference(path), new GetDataListener() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
+                //init Event From SP
                 if (dataSnapshot.getKey().charAt(0) == 'f') putEventsFromHashMaps(hashMapFamilyEvents);
                 else putEventsFromHashMaps(hashMapUserEvents);
+
                 Log.d(TAG, "onSuccess: " + dataSnapshot.getKey().charAt(0));
                 if (dataSnapshot != null) {
+                    // init Events from DB
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         Log.d(TAG, "onSuccess: " + ds.getKey());
                         if (dataSnapshot.getKey().charAt(0) == 'f' && (!hashMapFamilyEvents.containsKey(ds.getKey()))) {
@@ -332,8 +340,8 @@ public class Activity_Main extends AppCompatActivity {
         }
         updatedData(eventsArray);
         if (myEvent.isSwitchOn()) {
-            uploadEventToDB(myEvent, "families/" + user.getKey() + "/familyMyEvents");
-        } else uploadEventToDB(myEvent, "users/" + user.getPhone() + "/userMyEvents");
+            uploadEventToDB(myEvent, DB_FAMILY_EVENTS);
+        } else uploadEventToDB(myEvent, DB_USER_EVENTS);
         free = true;
     }
 
@@ -368,9 +376,21 @@ public class Activity_Main extends AppCompatActivity {
         if (tempUser.length() > 0) {
             user = gson.fromJson(tempUser, User.class);
             navHeader_LBL_userName.setText(user.getUserName());
+
         } else {
             Log.d(TAG, "getUser: FAILD!!!!!!!!!!!");
         }
+
+    }
+
+    private void setKeys() {
+        KEY_FAMILY_MEMBERS = user.getKey() + "_FAMILY_MEMBERS";
+        KEY_FAMILY_EVENTS = user.getKey() + "_FAMILY_EVENTS";
+        KEY_USER_EVENTS = user.getUserName() + "_USER_EVENTS";
+
+        DB_FAMILY_EVENTS = "families/" + user.getKey() + "/familyMyEvents";
+        DB_USER_EVENTS ="users/" + user.getPhone() + "/userMyEvents";
+        DB_FAMILY_MEMBERS = "families/" + user.getKey() + "/familyMembers";
 
     }
 

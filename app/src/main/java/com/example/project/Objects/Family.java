@@ -1,5 +1,7 @@
 package com.example.project.Objects;
-
+/*
+Developer - Imry Ashur
+*/
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,7 +11,7 @@ public class Family {
     private String managerPhone = "";
     private ArrayList<User> familyMembers = new ArrayList<>();
     private HashMap<String, MyEvent> familyMyEvents = new HashMap<>();
-    //private ArrayList<MyEvent> familyMyEvents = new ArrayList<>();
+
 
 
     public Family() {}
@@ -48,14 +50,6 @@ public class Family {
     public HashMap<String,MyEvent> getFamilyMyEvents() {
         return familyMyEvents;
     }
-
-//    public ArrayList<MyEvent> getFamilyMyEvents() {
-//        return familyMyEvents;
-//    }
-
-//    public void setFamilyMyEvents(ArrayList<MyEvent> familyMyEvents) {
-//        this.familyMyEvents = familyMyEvents;
-//    }
 
     public String getManagerPhone() {
         return managerPhone;

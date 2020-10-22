@@ -1,5 +1,7 @@
 package com.example.project.Activities;
-
+/*
+Developer - Imry Ashur
+*/
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.bumptech.glide.Glide;
 import com.example.project.Adapters.Adapter_Notes;
 import com.example.project.Fragments.Fragment_Note;
@@ -40,14 +40,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class Activity_Notes extends AppCompatActivity {
 
 
     private String TAG = "pttt";
+    private String SP_KEY_FAMILY_NOTES = "";
+    private String SP_KEY_USER_NOTES = "";
+
+    private String DB_USER_NOTES = "";
+    private String DB_FAMILY_NOTES = "";
     private DrawerLayout notes_SPC_drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar notes_SPC_toolBar;
@@ -81,14 +86,15 @@ public class Activity_Notes extends AppCompatActivity {
         showProgressDialog();
         initViews();
         getUser();
-        hashMapFamilyNotes = getHashMapDataFromSP(user.getKey() + "_FAMILY_NOTES");
-        hashMapUserNotes = getHashMapDataFromSP(user.getUserName() + "_USER_NOTES");
+        setKeys();
+        hashMapFamilyNotes = getHashMapDataFromSP(SP_KEY_FAMILY_NOTES);
+        hashMapUserNotes = getHashMapDataFromSP(SP_KEY_USER_NOTES);
         setSideMenu();
         initFragment();
         notes_BTN_newNote.setOnClickListener(newNoteBTN);
         notes_SPC_nav.setNavigationItemSelectedListener(menuListener);
-        initNotes("families/" + user.getKey() + "/familyNotes");
-        initNotes("users/" + user.getPhone() + "/userNotes");
+        initNotes(DB_FAMILY_NOTES);
+        initNotes(DB_USER_NOTES);
 
         Glide
                 .with(this)
@@ -102,10 +108,18 @@ public class Activity_Notes extends AppCompatActivity {
 
     }
 
+    private void setKeys() {
+        SP_KEY_FAMILY_NOTES = user.getKey() + "_FAMILY_NOTES";
+        SP_KEY_USER_NOTES = user.getUserName() + "_USER_NOTES";
+        DB_FAMILY_NOTES = "families/" + user.getKey() + "/familyNotes";
+        DB_USER_NOTES = "users/" + user.getPhone() + "/userNotes";
+
+    }
+
     @Override
     protected void onStop() {
-        parseHashMapToStringAndUploadToSP(hashMapFamilyNotes, user.getKey() + "_FAMILY_NOTES");
-        parseHashMapToStringAndUploadToSP(hashMapUserNotes, user.getUserName() + "_USER_NOTES");
+        parseHashMapToStringAndUploadToSP(hashMapFamilyNotes, SP_KEY_FAMILY_NOTES);
+        parseHashMapToStringAndUploadToSP(hashMapUserNotes, SP_KEY_USER_NOTES);
         super.onStop();
     }
 
@@ -229,9 +243,12 @@ public class Activity_Notes extends AppCompatActivity {
         readData(FirebaseDatabase.getInstance().getReference(path), new GetDataListener() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
+                // init Notes From SP
                 if (dataSnapshot.getKey().charAt(0) == 'f')
                     putNotesFromHashMaps(hashMapFamilyNotes);
                 else putNotesFromHashMaps(hashMapUserNotes);
+
+                // init Notes From DB That Not In SP
                 if (dataSnapshot != null) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         if (dataSnapshot.getKey().charAt(0) == 'f' && (!hashMapFamilyNotes.containsKey(ds.getKey()))) {
@@ -318,10 +335,10 @@ public class Activity_Notes extends AppCompatActivity {
         arrayIndexes.remove(lastNoteClicked.getKey());
         if (lastNoteClicked.isShare()) {
             hashMapFamilyNotes.remove(lastNoteClicked.getKey());
-            removeFromDB("families/" + user.getKey() + "/familyNotes");
+            removeFromDB(DB_FAMILY_NOTES);
         } else {
             hashMapUserNotes.remove(lastNoteClicked.getKey());
-            removeFromDB("users/" + user.getPhone() + "/userNotes");
+            removeFromDB(DB_USER_NOTES);
         }
         updatedData(notesArray);
     }
@@ -354,29 +371,35 @@ public class Activity_Notes extends AppCompatActivity {
             textInput = makeError(newNote_EDT_text, "Text");
 
             if (titleInput && textInput) {
+
                 if (newNote_BTN_go.getText().charAt(0) == 'e') {
                     removeNoteFromArrayAndHashMapAndDB();
                 }
-                Note note = new Note(title, text, repeat);
-                addNoteFromArrayAndHashMapAndDB(note);
-                //updatedData(notesArray);
-                MySignalV2.getInstance().showToast("Done!");
-                Log.d(TAG, "onClick: " + notesArray.size());
-                dialog.dismiss();
+
+                createNewNote(title, text, repeat);
             }
-            //updatedData(notesArray);
+
         }
     };
+
+    private void createNewNote(String title, String text, boolean repeat) {
+        Note note = new Note(title, text, repeat);
+        addNoteFromArrayAndHashMapAndDB(note);
+
+        MySignalV2.getInstance().showToast("Done!");
+        Log.d(TAG, "onClick: " + notesArray.size());
+        dialog.dismiss();
+    }
 
     private void addNoteFromArrayAndHashMapAndDB(Note note) {
         notesArray.add(note);
         arrayIndexes.put(note.getKey(), note);
         if (note.isShare()){
-            uploadNewNoteToDB(note, "families/" + user.getKey() + "/familyNotes");
+            uploadNewNoteToDB(note, DB_FAMILY_NOTES);
             hashMapFamilyNotes.put(note.getKey(),note);
         }
         else {
-            uploadNewNoteToDB(note, "users/" + user.getPhone() + "/userNotes");
+            uploadNewNoteToDB(note, DB_USER_NOTES);
             hashMapUserNotes.put(note.getKey(),note);
         }
         updatedData(notesArray);

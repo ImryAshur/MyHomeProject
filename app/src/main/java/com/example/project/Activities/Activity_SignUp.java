@@ -1,18 +1,20 @@
 package com.example.project.Activities;
-
+/*
+Developer - Imry Ashur
+*/
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import com.example.project.CallBacks.GetDataListener;
 import com.example.project.Objects.Family;
 import com.example.project.Objects.User;
+import com.example.project.Others.MySignalV2;
 import com.example.project.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -21,7 +23,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 
 public class Activity_SignUp extends AppCompatActivity {
@@ -69,7 +70,7 @@ public class Activity_SignUp extends AppCompatActivity {
 
     private void showProgressDialog() {
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading Please Wait...");
+        progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
     }
 
@@ -95,21 +96,24 @@ public class Activity_SignUp extends AppCompatActivity {
     private View.OnClickListener createNewHomeBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            openDialog();
+            if (isNetworkConnected()) openDialog();
+            else MySignalV2.getInstance().showToast(getString(R.string.network));
         }
     };
 
     private View.OnClickListener newHomeGoBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             final String userInputNickname = newHome_EDT_homeName.getEditText().getText().toString().trim();
             final String managerPhone = newHome_EDT_phoneNumber.getEditText().getText().toString().trim();
             final String familyName = newHome_EDT_familyName.getEditText().getText().toString().trim();
-            phoneinput = makeError(view,newHome_EDT_phoneNumber,"Phone Number");
-            nicknameinput = makeError(view,newHome_EDT_homeName,"Home Nickname");
-            familyinput = makeError(view,newHome_EDT_familyName,"Family Name");
+
+            phoneinput = makeError(view,newHome_EDT_phoneNumber,getString(R.string.phoneNumber));
+            nicknameinput = makeError(view,newHome_EDT_homeName,getString(R.string.nickname));
+            familyinput = makeError(view,newHome_EDT_familyName,getString(R.string.familyName));
             if(phoneinput && nicknameinput && familyinput) {
-                readData(FirebaseDatabase.getInstance().getReference("families"), new GetDataListener() {
+                readData(FirebaseDatabase.getInstance().getReference(getString(R.string.families)), new GetDataListener() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChild(userInputNickname)) {
@@ -117,9 +121,7 @@ public class Activity_SignUp extends AppCompatActivity {
                         } else {
                             addNewFamilyToDB(userInputNickname,familyName, managerPhone);
                             dialog.dismiss();
-                            signUp_EDT_familyName.getEditText().setText(familyName);
-                            signUp_EDT_phoneNumber.getEditText().setText(managerPhone);
-                            signUp_EDT_familyNickname.getEditText().setText(userInputNickname);
+                            fillEditText(familyName, managerPhone, userInputNickname);
                         }
                     }
 
@@ -137,10 +139,15 @@ public class Activity_SignUp extends AppCompatActivity {
         }
     };
 
+    private void fillEditText(String familyName, String managerPhone, String userInputNickname) {
+        signUp_EDT_familyName.getEditText().setText(familyName);
+        signUp_EDT_phoneNumber.getEditText().setText(managerPhone);
+        signUp_EDT_familyNickname.getEditText().setText(userInputNickname);
+    }
 
 
     private void addNewFamilyToDB(String key,String familyName,String managerPhone) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("families");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(getString(R.string.families));
         Family family = new Family(key,familyName,managerPhone);
         myRef.child(family.getKey()).setValue(family);
     }
@@ -148,8 +155,6 @@ public class Activity_SignUp extends AppCompatActivity {
     private View.OnClickListener haveAccountBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-//            Intent intent = new Intent(Activity_SignUp.this,Activity_LogIn.class);
-//            startActivity(intent);
             finish();
         }
     };
@@ -160,31 +165,27 @@ public class Activity_SignUp extends AppCompatActivity {
             showProgressDialog();
             boolean familyNickname;
             final String userInputNickname = signUp_EDT_familyNickname.getEditText().getText().toString().trim();
-            familyNickname = makeError(view,signUp_EDT_familyNickname,"Family Nickname");
-            familyinput = makeError(view,signUp_EDT_familyName,"Family Name");
-            userinput = makeError(view,signUp_EDT_userName,"User Name");
-            phoneinput = makeError(view,signUp_EDT_phoneNumber,"Phone Number");
-            passwordinput = makeError(view,signUp_EDT_password,"Password");
+            familyNickname = makeError(view,signUp_EDT_familyNickname,getString(R.string.nickname));
+            familyinput = makeError(view,signUp_EDT_familyName,getString(R.string.familyName));
+            userinput = makeError(view,signUp_EDT_userName,getString(R.string.userName));
+            phoneinput = makeError(view,signUp_EDT_phoneNumber,getString(R.string.phoneNumber));
+            passwordinput = makeError(view,signUp_EDT_password,getString(R.string.password));
             if(familyinput && userinput && phoneinput && passwordinput && familyNickname){
-                Log.d("pttt", "onClick: ");
-                checkIfFamilyNameInDB(userInputNickname);
+                if (isNetworkConnected()){
+                    checkIfFamilyNameInDB(userInputNickname);
+                }else MySignalV2.getInstance().showToast(getString(R.string.network));
+
             }else dismissDialog();
         }
     };
 
     private void checkIfFamilyNameInDB(final String userInputNickname) {
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("families");
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.families));
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild(userInputNickname)) {
-
-                    //Family family = snapshot.child(userInputNickname).getValue(Family.class);
-                    //Log.d("pttt",   "" + family);
                     User user = createNewUserAndStoreAtDB();
-                    //family.getFamilyMembers().add(user);
-                    //Log.d("pttt",   "" + family.toString());
-
                     reference.child(user.getKey()).child("familyMembers").child(user.getPhone()).setValue(user);
                     dismissDialog();
                     finish();
@@ -211,7 +212,7 @@ public class Activity_SignUp extends AppCompatActivity {
         User user = new User(key,familyName,userName,phoneNumber,password);
 
         //Store at DB
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(getString(R.string.users));
         userHashMapDB.put(phoneNumber,user);
         myRef.updateChildren(userHashMapDB);
         return user;
@@ -249,29 +250,8 @@ public class Activity_SignUp extends AppCompatActivity {
             return true;
         }
     }
-
-
-
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
 }
-
-//        Query checkUserInput = reference.orderByChild("nickname").equalTo(input);
-//        Log.d("pttt", " " +checkUserInput.getRef());
-//        Log.d("pttt", " " +checkUserInput);
-//        if (checkUserInput.getRef().child("nickname").getKey().equals(input)){
-//            Log.d("pttt", "here ");
-//            newHome_EDT_homeName.setError("Family Nickname Already Exists");
-//            correctinput = false;
-//        }else correctinput = true;
-
-//        checkUserInput.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    Log.d("pttt", "here ");
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });

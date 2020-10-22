@@ -1,6 +1,7 @@
 package com.example.project.Objects;
-
-import com.example.project.Objects.MyEvent;
+/*
+Developer - Imry Ashur
+*/
 
 import java.util.ArrayList;
 

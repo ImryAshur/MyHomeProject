@@ -1,5 +1,7 @@
 package com.example.project.Objects;
-
+/*
+Developer - Imry Ashur
+*/
 import java.sql.Timestamp;
 
 public class Expense {

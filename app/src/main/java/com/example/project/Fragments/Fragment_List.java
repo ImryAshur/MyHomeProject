@@ -1,5 +1,7 @@
 package com.example.project.Fragments;
-
+/*
+Developer - Imry Ashur
+*/
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,12 +47,6 @@ public class Fragment_List extends Fragment {
         }
         findViews(view);
 
-//        list_LST_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
-//            {
-//                callBack_list.getEventFromList(itemPosition);
-//            }
-//        });
 
         return view;
     }

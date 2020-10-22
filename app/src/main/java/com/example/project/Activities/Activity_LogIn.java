@@ -1,19 +1,22 @@
 package com.example.project.Activities;
-
+/*
+Developer - Imry Ashur
+*/
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-
 import com.example.project.CallBacks.GetDataListener;
 import com.example.project.Objects.User;
+import com.example.project.Others.MySignalV2;
 import com.example.project.R;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,10 +26,10 @@ import com.google.gson.Gson;
 
 public class Activity_LogIn extends AppCompatActivity {
 
-    private TextInputLayout logIn_EDT_phoneNumber;
-    private TextInputLayout logIn_EDT_password;
-    private Button logIn_BTN_loginbutton;
-    private Button logIn_BTN_signUpButton;
+    private TextInputEditText logIn_EDT_phoneNumber;
+    private TextInputEditText logIn_EDT_password;
+    private MaterialButton logIn_BTN_loginbutton;
+    private MaterialButton logIn_BTN_signUpButton;
     private boolean phoneinput = false,passwordinput = false;
     private ProgressDialog progressDialog;
 
@@ -47,7 +50,7 @@ public class Activity_LogIn extends AppCompatActivity {
     }
     private void showProgressDialog() {
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading Please Wait...");
+        progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
     }
 
@@ -66,52 +69,64 @@ public class Activity_LogIn extends AppCompatActivity {
     private View.OnClickListener loginBTN = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            showProgressDialog();
-            final String userInputPhoneNumber = logIn_EDT_phoneNumber.getEditText().getText().toString().trim();
-            final String userInputPassword = logIn_EDT_password.getEditText().getText().toString().trim();
+            if (isNetworkConnected()) {
 
-            phoneinput = makeError(view, logIn_EDT_phoneNumber, "Phone Number");
-            passwordinput = makeError(view, logIn_EDT_password, "Password");
+                final String userInputPhoneNumber = logIn_EDT_phoneNumber.getText().toString().trim();
+                final String userInputPassword = logIn_EDT_password.getText().toString().trim();
 
-            if(phoneinput && passwordinput){
-                readData(FirebaseDatabase.getInstance().getReference("users"), new GetDataListener() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChild(userInputPhoneNumber)) {
-                            User user = dataSnapshot.child(userInputPhoneNumber).getValue(User.class);
-                            if (user.getPassword().equals(userInputPassword)){
-                                Gson gson = new Gson();
-                                String parseUser = gson.toJson(user);
-                                Intent intent = new Intent(Activity_LogIn.this, Activity_Main.class);
-                                intent.putExtra(Activity_Main.EXTRA_KEY_USER,parseUser);
+                phoneinput = makeError(view, logIn_EDT_phoneNumber, getString(R.string.phoneNumber));
+                passwordinput = makeError(view, logIn_EDT_password, getString(R.string.password));
+
+                if (phoneinput && passwordinput) {
+                    showProgressDialog();
+                    readData(FirebaseDatabase.getInstance().getReference(getString(R.string.users)), new GetDataListener() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild(userInputPhoneNumber)) {
+                                User user = dataSnapshot.child(userInputPhoneNumber).getValue(User.class);
+                                if (user.getPassword().equals(userInputPassword)) {
+                                    startApp(user);
+                                } else {
+                                    dismissDialog();
+                                    logIn_EDT_password.setError("Wrong Password, Try again");
+                                }
+                            } else {
                                 dismissDialog();
-                                startActivity(intent);
-                                finish();
-                            }else{
-                                dismissDialog();
-                                logIn_EDT_password.setError("Wrong Password, Try again");
+                                logIn_EDT_phoneNumber.setError("Wrong Phone Number, Try again");
                             }
-                        } else {
-                            dismissDialog();
-                            logIn_EDT_phoneNumber.setError("Wrong Phone Number, Try again");
                         }
-                    }
 
-                    @Override
-                    public void onStart() {
+                        @Override
+                        public void onStart() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onFailure() {
+                        @Override
+                        public void onFailure() {
 
-                    }
-                });
+                        }
+                    });
 
 
-            }
+                }
+            }else MySignalV2.getInstance().showToast(getString(R.string.network));
         }
     };
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    private void startApp(User user) {
+        Gson gson = new Gson();
+        String parseUser = gson.toJson(user);
+        Intent intent = new Intent(Activity_LogIn.this, Activity_Main.class);
+        intent.putExtra(Activity_Main.EXTRA_KEY_USER,parseUser);
+        dismissDialog();
+        startActivity(intent);
+        finish();
+    }
 
 
     public void readData(DatabaseReference ref, final GetDataListener listener) {
@@ -131,10 +146,10 @@ public class Activity_LogIn extends AppCompatActivity {
 
     }
 
-    private boolean makeError(View view,TextInputLayout inputLayout,String label) {
+    private boolean makeError(View view,TextInputEditText inputLayout,String label) {
         Snackbar snackbar = Snackbar.make(view, "Please fill out these fields",
                 Snackbar.LENGTH_LONG);
-        if (inputLayout.getEditText().length() == 0) {
+        if (inputLayout.length() == 0) {
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
             snackbar.show();
@@ -144,7 +159,6 @@ public class Activity_LogIn extends AppCompatActivity {
         }else{
             snackbar.dismiss();
             inputLayout.setError(null);
-            inputLayout.setErrorEnabled(false);
             return true;
         }
     }

@@ -1,5 +1,7 @@
 package com.example.project.Activities;
-
+/*
+Developer - Imry Ashur
+*/
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -76,13 +78,14 @@ public class Activity_Settings extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         String hashMapString = new Gson().toJson(hashMapFamilyMembersNames);
-        MySharedPreferencesV4.getInstance().putString(user.getKey()+"_FAMILY_MEMBERS",hashMapString);
+        MySharedPreferencesV4.getInstance().putString(Activity_Main.KEY_FAMILY_MEMBERS, hashMapString);
     }
 
     private ArrayList<String> getArrayListFromSP() {
         ArrayList<String> familyMembers = new ArrayList<>();
-        String hashMapString = MySharedPreferencesV4.getInstance().getString(user.getKey() + "_FAMILY_MEMBERS", "");
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {}.getType();
+        String hashMapString = MySharedPreferencesV4.getInstance().getString(Activity_Main.KEY_FAMILY_MEMBERS, "");
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
         hashMapFamilyMembersNames = new Gson().fromJson(hashMapString, type);
         for (String key : hashMapFamilyMembersNames.values()) {
             familyMembers.add(key);
@@ -202,45 +205,56 @@ public class Activity_Settings extends AppCompatActivity {
     private View.OnClickListener addMember = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            boolean userName, phoneNum, password;
+            boolean userName, phoneNum;
             TextInputEditText addMember_EDT_userName = dialog.findViewById(R.id.addMember_EDT_userName);
             TextInputEditText addMember_EDT_phoneNumber = dialog.findViewById(R.id.addMember_EDT_phoneNumber);
             String inputUserName = addMember_EDT_userName.getText().toString();
             String inputphoneNum = addMember_EDT_phoneNumber.getText().toString();
-            userName = makeError(addMember_EDT_userName, "User Name");
-            phoneNum = makeError(addMember_EDT_phoneNumber, "Phone Number");
+            userName = makeError(addMember_EDT_userName, getString(R.string.userName));
+            phoneNum = makeError(addMember_EDT_phoneNumber, getString(R.string.phoneNumber));
+
+            if (inputUserName.equals(user.getUserName())){
+                userName = false;
+                addMember_EDT_userName.setError("YOU CAN'T REMOVE YOUR ACCOUNT!");
+            }
 
             if (((String) view.getTag()).equals("a")) {
-                TextInputEditText addMember_EDT_password = dialog.findViewById(R.id.addMember_EDT_password);
-                String inputpassword = addMember_EDT_password.getText().toString();
-                password = makeError(addMember_EDT_password, "Password");
-                if (userName && phoneNum && password) {
-                    User myUser = new User(user.getKey(), user.getFamilyName(), inputUserName, inputphoneNum, inputpassword);
-                    addUserToDB("families/" + user.getKey() + "/familyMembers", myUser);
-                    addUserToDB("users", myUser);
-                    familyMembers.add(myUser.getUserName());
-                    hashMapFamilyMembersNames.put(myUser.getPhone(),myUser.getUserName());
-                    MySignalV2.getInstance().showToast("User Added!");
-                    dialog.dismiss();
-                }
-            } else {
-                if (phoneNum && userName)
-                    deleteMember(inputUserName, inputphoneNum, addMember_EDT_userName, addMember_EDT_phoneNumber);
+                addMemberToDB(userName, phoneNum, inputUserName, inputphoneNum);
+            }
+            else if (phoneNum && userName) {
+
+                deleteMember(inputUserName, inputphoneNum, addMember_EDT_userName, addMember_EDT_phoneNumber);
             }
         }
     };
+
+    private void addMemberToDB(boolean userName, boolean phoneNum, String inputUserName, String inputphoneNum) {
+        boolean password;
+        TextInputEditText addMember_EDT_password = dialog.findViewById(R.id.addMember_EDT_password);
+        String inputpassword = addMember_EDT_password.getText().toString();
+        password = makeError(addMember_EDT_password, getString(R.string.password));
+        if (userName && phoneNum && password) {
+            User myUser = new User(user.getKey(), user.getFamilyName(), inputUserName, inputphoneNum, inputpassword);
+            addUserToDB(Activity_Main.DB_FAMILY_MEMBERS, myUser);
+            addUserToDB("users", myUser);
+            familyMembers.add(myUser.getUserName());
+            hashMapFamilyMembersNames.put(myUser.getPhone(), myUser.getUserName());
+            MySignalV2.getInstance().showToast("User Added!");
+            dialog.dismiss();
+        }
+    }
 
     private void deleteMember(String inputUserName, String inputphoneNum, TextInputEditText addMember_EDT_userName
             , TextInputEditText addMember_EDT_phoneNumber) {
         int index = checkIfInFamilyMembers(inputUserName);
         if (index != -1) {
             addMember_EDT_userName.setError(null);
-            checkPhoneNumberInDB(inputphoneNum, addMember_EDT_phoneNumber, index,inputUserName);
+            checkPhoneNumberInDB(inputphoneNum, addMember_EDT_phoneNumber, index, inputUserName);
         } else addMember_EDT_userName.setError("There Isn't Family Member In This Name...");
     }
 
     private void checkPhoneNumberInDB(final String inputphoneNum, final TextInputEditText addMember_EDT_phoneNumber, final int index, final String inputUserName) {
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("families/" + user.getKey() + "/familyMembers");
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Activity_Main.DB_FAMILY_MEMBERS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -248,7 +262,7 @@ public class Activity_Settings extends AppCompatActivity {
                     addMember_EDT_phoneNumber.setError(null);
                     User tempUser = snapshot.child(inputphoneNum).getValue(User.class);
                     Log.d(TAG, "onDataChange: " + tempUser.getUserName() + tempUser.getPhone());
-                    removeFamilyMember(ref,inputphoneNum,index,inputUserName,tempUser,addMember_EDT_phoneNumber);
+                    removeFamilyMember(ref, inputphoneNum, index, inputUserName, tempUser, addMember_EDT_phoneNumber);
                 } else {
                     addMember_EDT_phoneNumber.setError("There Isn't Phone Number In This Family...");
                 }
@@ -261,7 +275,7 @@ public class Activity_Settings extends AppCompatActivity {
         });
     }
 
-    private void removeFamilyMember(DatabaseReference ref, String inputphoneNum, int index, String inputUserName,User user,TextInputEditText addMember_EDT_phoneNumber) {
+    private void removeFamilyMember(DatabaseReference ref, String inputphoneNum, int index, String inputUserName, User user, TextInputEditText addMember_EDT_phoneNumber) {
         if (user.getUserName().equals(inputUserName)) {
             addMember_EDT_phoneNumber.setError(null);
             ref.child(inputphoneNum).removeValue();
@@ -270,7 +284,7 @@ public class Activity_Settings extends AppCompatActivity {
             deleteFromDB("users/", inputphoneNum);
             MySignalV2.getInstance().showToast("Family Member Removed!");
             dialog.dismiss();
-        }else addMember_EDT_phoneNumber.setError("User Name And Phone Number Don't Match!");
+        } else addMember_EDT_phoneNumber.setError("User Name And Phone Number Didn't Match!");
     }
 
     private int checkIfInFamilyMembers(String inputUserName) {
@@ -312,30 +326,56 @@ public class Activity_Settings extends AppCompatActivity {
             String currentPassword = changePassword_EDT_currentPassword.getText().toString();
             String newPassword = changePassword_EDT_newPassword.getText().toString();
             String verfiyPassword = changePassword_EDT_verifyPassword.getText().toString();
-            if (currentPassword.equals(user.getPassword())) {
-                userPassword = true;
-                changePassword_EDT_currentPassword.setError(null);
-            } else {
-                changePassword_EDT_currentPassword.setError("Wrong Password");
-            }
 
-            if (newPassword.equals(verfiyPassword) && newPassword.length() > 0) {
-                samePassword = true;
-                changePassword_EDT_currentPassword.setError(null);
-            } else {
-                changePassword_EDT_verifyPassword.setError("Check Password");
-            }
+            //check same password
+            userPassword = currentPassMatchInput(userPassword, changePassword_EDT_currentPassword, currentPassword);
+
+            //check match between password and verfiy password
+            samePassword = isSamePassword(samePassword, changePassword_EDT_currentPassword, changePassword_EDT_verifyPassword, newPassword, verfiyPassword);
+
             if (userPassword && samePassword) {
-
-                updateDB("users/" + user.getPhone(), newPassword);
-
-                updateDB("families/" + user.getKey() + "/familyMembers/" + user.getPhone(), newPassword);
-                user.setPassword(newPassword);
-                dialog.dismiss();
-                MySignalV2.getInstance().showToast("Password Changed!");
+                uptadePasswordInDB(newPassword);
             }
         }
     };
+
+    private boolean isSamePassword(boolean samePassword, TextInputEditText changePassword_EDT_currentPassword, TextInputEditText changePassword_EDT_verifyPassword, String newPassword, String verfiyPassword) {
+        if (newPassword.equals(verfiyPassword) && newPassword.length() > 0) {
+            samePassword = correctInput(changePassword_EDT_currentPassword);
+        } else {
+            putError(changePassword_EDT_verifyPassword, "Check Password");
+        }
+        return samePassword;
+    }
+
+    private boolean currentPassMatchInput(boolean userPassword, TextInputEditText changePassword_EDT_currentPassword, String currentPassword) {
+        if (currentPassword.equals(user.getPassword())) {
+            userPassword = correctInput(changePassword_EDT_currentPassword);
+        } else {
+            putError(changePassword_EDT_currentPassword, "Wrong Password");
+        }
+        return userPassword;
+    }
+
+    private void putError(TextInputEditText changePassword_EDT_currentPassword, String text) {
+        changePassword_EDT_currentPassword.setError(text);
+    }
+
+    private boolean correctInput(TextInputEditText changePassword_EDT_currentPassword) {
+        boolean userPassword;
+        userPassword = true;
+        changePassword_EDT_currentPassword.setError(null);
+        return userPassword;
+    }
+
+
+    private void uptadePasswordInDB(String newPassword) {
+        updateDB("users/" + user.getPhone(), newPassword);
+        updateDB(Activity_Main.DB_FAMILY_MEMBERS + "/" + user.getPhone(), newPassword);
+        user.setPassword(newPassword);
+        dialog.dismiss();
+        MySignalV2.getInstance().showToast("Password Changed!");
+    }
 
     private void updateDB(String path, String value) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
@@ -384,6 +424,12 @@ public class Activity_Settings extends AppCompatActivity {
         MaterialButton details_BTN_ok = dialog.findViewById(R.id.details_BTN_ok);
         details_BTN_ok.setOnClickListener(finishDialog);
 
+        setTextOnEditText(details_LBL_familyNickname, details_LBL_familyName,
+                details_LBL_userName, details_LBL_phoneNumber, details_LBL_password);
+    }
+
+    private void setTextOnEditText(MaterialTextView details_LBL_familyNickname, MaterialTextView details_LBL_familyName,
+                                   MaterialTextView details_LBL_userName, MaterialTextView details_LBL_phoneNumber, MaterialTextView details_LBL_password) {
         details_LBL_familyNickname.setText(user.getKey());
         details_LBL_familyName.setText(user.getFamilyName());
         details_LBL_userName.setText(user.getUserName());

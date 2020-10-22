@@ -23,15 +23,6 @@
 
 
         <activity
-            android:name=".Activity_Economy"
-            android:screenOrientation="portrait"
-            android:label=""
-            android:theme="@style/AppTheme.NoActionBar" >
-
-
-
-        </activity>
-        <activity
             android:name=".Activities.Activity_NewEvent"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -74,9 +65,6 @@
 
         </activity>
 
-        <service
-            android:name=".MyService"
-            android:exported="false" />
     </application>
 
 </manifest>
